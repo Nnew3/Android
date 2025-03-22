@@ -1,12 +1,12 @@
 package com.example.mz_focusnews.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,9 +61,6 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHo
                 .error(R.drawable.character) // 이미지 로드 실패 시 표시할 이미지
                 .into(holder.iv_image);
 
-        // 디버깅 로그 추가
-        Log.d("InterestAdapter", "Original date string: " + news.getDate());
-
         // NewsItem 객체를 태그로 설정
         holder.itemView.setTag(news);
 
@@ -73,7 +70,6 @@ public class InterestAdapter extends RecyclerView.Adapter<InterestAdapter.ViewHo
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     News clickedItem = newsList.get(position);
-                    Log.d("InterestAdapter", "Item clicked: " + clickedItem.getTitle()); // 로그 추가
                     listener.onNewsClick(clickedItem); // 클릭된 아이템 정보 전달
                 }
             }

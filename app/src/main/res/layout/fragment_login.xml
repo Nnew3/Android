@@ -39,8 +39,7 @@
                 android:id="@+id/img_user"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/register_user_icon" />
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:id="@+id/text_email"
@@ -82,8 +81,7 @@
                 android:id="@+id/img_lock"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/register_lock_icon" />
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:id="@+id/text_pw"
@@ -133,7 +131,7 @@
             android:id="@+id/btn_login"
             android:layout_width="190dp"
             android:layout_height="46dp"
-            android:background="@drawable/background_shape_blue_register"
+            android:background="@drawable/background_shape_blue"
             android:text="로그인"
             android:textSize="16sp"
             android:textStyle="bold" />

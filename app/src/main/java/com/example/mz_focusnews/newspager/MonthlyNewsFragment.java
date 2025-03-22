@@ -3,25 +3,19 @@ package com.example.mz_focusnews.newspager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mz_focusnews.NewsDB.News;
-import com.example.mz_focusnews.NewsUtils;
+import androidx.fragment.app.Fragment;
+
 import com.example.mz_focusnews.R;
-import com.example.mz_focusnews.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class MonthlyNewsFragment extends Fragment {
@@ -32,7 +26,6 @@ public class MonthlyNewsFragment extends Fragment {
     private TextView monthly_content;
     private TextView monthly_date;
     private ImageView monthly_image;
-    private Map<String, UserSession> userSessions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +35,6 @@ public class MonthlyNewsFragment extends Fragment {
         monthly_content = view.findViewById(R.id.monthly_content);
         monthly_image = view.findViewById(R.id.monthly_image);
         monthly_date = view.findViewById(R.id.monthly_date);
-        userSessions = new HashMap<>();
 
         SharedPreferences sp = getActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         user_id = sp.getString("user_id", null);
@@ -50,10 +42,7 @@ public class MonthlyNewsFragment extends Fragment {
         monthly_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News news = (News) monthly_title.getTag();
-                if (news != null) {
-                    NewsUtils.handleNewsClick(MonthlyNewsFragment.this, news, userSessions, "romi");
-                }
+
             }
         });
 
@@ -62,8 +51,7 @@ public class MonthlyNewsFragment extends Fragment {
     }
 
     private void loadMonthlyNews() {
-        String startDate = getStartDateOfMonth();
-        NewsUtils.loadNews(getContext(), startDate, "monthly", monthly_title, monthly_content, monthly_date, monthly_image, userSessions, this);
+
     }
 
     private String getStartDateOfMonth() {
