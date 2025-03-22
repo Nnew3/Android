@@ -3,25 +3,19 @@ package com.example.mz_focusnews.newspager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mz_focusnews.NewsDB.News;
-import com.example.mz_focusnews.NewsUtils;
+import androidx.fragment.app.Fragment;
+
 import com.example.mz_focusnews.R;
-import com.example.mz_focusnews.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class DailyNewsFragment extends Fragment {
@@ -32,7 +26,6 @@ public class DailyNewsFragment extends Fragment {
     private TextView daily_content;
     private TextView daily_date;
     private ImageView daily_image;
-    private Map<String, UserSession> userSessions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +35,6 @@ public class DailyNewsFragment extends Fragment {
         daily_content = view.findViewById(R.id.daily_content);
         daily_image = view.findViewById(R.id.daily_image);
         daily_date = view.findViewById(R.id.daily_date);
-        userSessions = new HashMap<>();
 
         SharedPreferences sp = getActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         user_id = sp.getString("user_id", null);
@@ -50,10 +42,7 @@ public class DailyNewsFragment extends Fragment {
         daily_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News news = (News) daily_title.getTag();
-                if (news != null) {
-                    NewsUtils.handleNewsClick(DailyNewsFragment.this, news, userSessions, user_id);
-                }
+
             }
         });
 
@@ -63,8 +52,7 @@ public class DailyNewsFragment extends Fragment {
 
     // 오늘의 뉴스를 로드하는 메소드
     private void loadDailyNews() {
-        String todayDate = getCurrentDate();
-        NewsUtils.loadNews(getContext(), todayDate, "daily", daily_title, daily_content, daily_date, daily_image, userSessions, this);
+
     }
 
     // 현재 날짜를 가져오는 메소드

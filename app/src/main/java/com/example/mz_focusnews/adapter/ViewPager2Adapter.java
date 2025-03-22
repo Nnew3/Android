@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.example.mz_focusnews.newspager.MonthlyNewsFragment;
 import com.example.mz_focusnews.newspager.DailyNewsFragment;
+import com.example.mz_focusnews.newspager.MonthlyNewsFragment;
 import com.example.mz_focusnews.newspager.WeeklyNewsFragment;
 
 public class ViewPager2Adapter extends FragmentStateAdapter {

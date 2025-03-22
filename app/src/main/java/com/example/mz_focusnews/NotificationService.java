@@ -76,7 +76,6 @@ public class NotificationService {
 
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-            Log.d("alaram", "알림 전송 완료");
 
         }
     }

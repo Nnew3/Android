@@ -5,11 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 // 진입화면
 public class SplashActivity extends AppCompatActivity {
@@ -22,7 +18,6 @@ public class SplashActivity extends AppCompatActivity {
         // 3초동안 뜨게 한다
         Handler hd = new Handler(Looper.getMainLooper());
         hd.postDelayed(new splashHandler(), 2000);
-
     }
 
     private class splashHandler implements Runnable {

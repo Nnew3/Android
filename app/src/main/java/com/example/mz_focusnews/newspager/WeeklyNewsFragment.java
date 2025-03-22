@@ -3,25 +3,19 @@ package com.example.mz_focusnews.newspager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.mz_focusnews.NewsDB.News;
-import com.example.mz_focusnews.NewsUtils;
+import androidx.fragment.app.Fragment;
+
 import com.example.mz_focusnews.R;
-import com.example.mz_focusnews.UserSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 public class WeeklyNewsFragment extends Fragment {
@@ -31,7 +25,6 @@ public class WeeklyNewsFragment extends Fragment {
     private TextView weekly_content;
     private TextView weekly_date;
     private ImageView weekly_image;
-    private Map<String, UserSession> userSessions;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +34,6 @@ public class WeeklyNewsFragment extends Fragment {
         weekly_content = view.findViewById(R.id.weekly_content);
         weekly_image = view.findViewById(R.id.weekly_Image);
         weekly_date = view.findViewById(R.id.weekly_date);
-        userSessions = new HashMap<>();
 
         SharedPreferences sp = getActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         user_id = sp.getString("user_id", null);
@@ -49,10 +41,7 @@ public class WeeklyNewsFragment extends Fragment {
         weekly_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                News news = (News) weekly_title.getTag();
-                if (news != null) {
-                    NewsUtils.handleNewsClick(WeeklyNewsFragment.this, news, userSessions, user_id);
-                }
+
             }
         });
 
@@ -61,8 +50,7 @@ public class WeeklyNewsFragment extends Fragment {
     }
 
     private void loadWeeklyNews() {
-        String startDate = getStartDateOfWeek();
-        NewsUtils.loadNews(getContext(), startDate, "weekly", weekly_title, weekly_content, weekly_date, weekly_image, userSessions, this);
+
     }
 
     private String getStartDateOfWeek() {
