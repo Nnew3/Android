@@ -64,9 +64,9 @@ android {
         implementation libs.ui.graphics
         implementation libs.ui.tooling.preview
         implementation libs.material3
-        implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-        implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-        implementation 'com.android.volley:volley:1.2.1'
+//        implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+//        implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+
         testImplementation libs.junit
         androidTestImplementation libs.ext.junit
         androidTestImplementation libs.espresso.core
@@ -75,7 +75,6 @@ android {
         implementation 'com.google.code.gson:gson:2.10.1'               // 2.8.6?
         implementation 'com.github.bumptech.glide:glide:4.12.0'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
 
         // 이미지 로딩을 위한 Glide
         implementation 'com.github.bumptech.glide:glide:4.12.0'
@@ -95,8 +94,6 @@ android {
         implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
         implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-        // OpenCSV 라이브러리 - csv 파일 읽을 때 사용
-        implementation 'com.opencsv:opencsv:5.5.2'
 
         implementation libs.navigation.fragment
         implementation libs.navigation.ui
@@ -115,7 +112,26 @@ android {
         // glide
         implementation 'com.github.bumptech.glide:glide:4.13.0'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
+        // material design
+        implementation 'androidx.compose.material:material'
+
+        // such as input and measurement/layout
+        implementation libs.androidx.ui
+
+        // Android Studio Preview support
+        implementation libs.androidx.ui.tooling.preview
+        debugImplementation libs.androidx.ui.tooling
+
+        // navigation
+        implementation(libs.androidx.navigation.compose)
+
+        implementation("androidx.compose.ui:ui")
+        implementation("androidx.compose.ui:ui-graphics")
+        implementation("androidx.compose.ui:ui-tooling-preview")
+        implementation("androidx.compose.material3:material3")
     }
+    buildToolsVersion '34.0.0'
 }
 
 dependencies {
@@ -123,4 +139,10 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }

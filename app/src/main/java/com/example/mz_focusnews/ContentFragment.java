@@ -12,9 +12,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-
 public class ContentFragment extends Fragment {
 
     private TextView tv_title;
