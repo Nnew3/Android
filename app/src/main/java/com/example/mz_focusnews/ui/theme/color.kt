@@ -13,5 +13,7 @@ val Blue_800 = Color(0xFF63A4F2) // #63A4F2
 val Blue_900 = Color(0xFF3D8FEF) // #3D8FEF
 
 val Gray_100 = Color(0xFFE9EBED)
-val Gray_200 = Color(0xFFD1D1D1)
-val Gray_300 = Color(0xFFADADAD)
+val Gray_200 = Color(0xFFDBDBDB)
+val Gray_300 = Color(0xFFD1D1D1)
+val Gray_400 = Color(0xFFADADAD)
+val Gray_500 = Color(0xFF484848)

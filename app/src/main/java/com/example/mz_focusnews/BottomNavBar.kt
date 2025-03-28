@@ -17,7 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.mz_focusnews.ui.theme.Bg_Blue
 import com.example.mz_focusnews.ui.theme.Blue_900
-import com.example.mz_focusnews.ui.theme.Gray_200
+import com.example.mz_focusnews.ui.theme.Gray_300
 
 @Composable
 fun BottomNavBar(
@@ -60,7 +60,7 @@ fun BottomNavBar(
                 },
                 selected = (currentRoute == it.route),
                 selectedContentColor = Blue_900,
-                unselectedContentColor = Gray_200,
+                unselectedContentColor = Gray_300,
                 onClick = {
                     navController.navigate(it.route) {
                         navController.graph.startDestinationRoute?.let {
