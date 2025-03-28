@@ -4,17 +4,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class NotificationService {
 
@@ -28,27 +21,7 @@ public class NotificationService {
     }
 
     public void fetchNotifications() {
-        RequestQueue queue = Volley.newRequestQueue(context);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET,
-                URL,
-                null,
-                response -> {
-                    try {
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject notification = response.getJSONObject(i);
-                            String newsTitle = notification.getString("title");
-                            sendNotification(newsTitle);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                },
-                error -> error.printStackTrace()
-        );
-
-        queue.add(jsonArrayRequest);
     }
 
     private void sendNotification(String newsTitle) {
