@@ -1,4 +1,4 @@
-package com.example.mz_focusnews.ui
+package com.example.mz_focusnews.ui.myiconpack
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -15,15 +15,15 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mz_focusnews.MyIconPack
+import com.example.mz_focusnews.ui.MyIconPack
 import kotlin.Unit
 
 public val MyIconPack.Category: ImageVector
     get() {
-        if (_categories != null) {
-            return _categories!!
+        if (_category != null) {
+            return _category!!
         }
-        _categories = Builder(name = "Categories", defaultWidth = 21.0.dp, defaultHeight = 22.0.dp,
+        _category = Builder(name = "Categories", defaultWidth = 21.0.dp, defaultHeight = 22.0.dp,
                 viewportWidth = 21.0f, viewportHeight = 22.0f).apply {
             path(fill = SolidColor(Color(0xFFD1D1D1)), stroke = null, strokeLineWidth = 0.0f,
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -82,10 +82,10 @@ public val MyIconPack.Category: ImageVector
             }
         }
         .build()
-        return _categories!!
+        return _category!!
     }
 
-private var _categories: ImageVector? = null
+private var _category: ImageVector? = null
 
 @Preview
 @Composable

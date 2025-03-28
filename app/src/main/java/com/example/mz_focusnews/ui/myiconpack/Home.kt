@@ -1,4 +1,4 @@
-package com.example.mz_focusnews.ui
+package com.example.mz_focusnews.ui.myiconpack
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -16,20 +16,23 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mz_focusnews.MyIconPack
-import kotlin.Unit
+import com.example.mz_focusnews.ui.MyIconPack
 
 public val MyIconPack.Home: ImageVector
     get() {
         if (_home != null) {
             return _home!!
         }
-        _home = Builder(name = "Home", defaultWidth = 23.0.dp, defaultHeight = 22.0.dp,
-                viewportWidth = 23.0f, viewportHeight = 22.0f).apply {
+        _home = Builder(
+            name = "Home", defaultWidth = 23.0.dp, defaultHeight = 22.0.dp,
+            viewportWidth = 23.0f, viewportHeight = 22.0f
+        ).apply {
             group {
-                path(fill = SolidColor(Color(0xFF3D8FEF)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                        pathFillType = NonZero) {
+                path(
+                    fill = SolidColor(Color(0xFF3D8FEF)), stroke = null, strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    pathFillType = NonZero
+                ) {
                     moveTo(11.5f, 13.743f)
                     curveTo(9.912f, 13.743f, 8.625f, 14.974f, 8.625f, 16.493f)
                     verticalLineTo(21.993f)
@@ -38,9 +41,11 @@ public val MyIconPack.Home: ImageVector
                     curveTo(14.375f, 14.974f, 13.088f, 13.743f, 11.5f, 13.743f)
                     close()
                 }
-                path(fill = SolidColor(Color(0xFFD1D1D1)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                        pathFillType = NonZero) {
+                path(
+                    fill = SolidColor(Color(0xFFD1D1D1)), stroke = null, strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    pathFillType = NonZero
+                ) {
                     moveTo(16.292f, 16.493f)
                     verticalLineTo(21.993f)
                     horizontalLineTo(20.125f)
@@ -60,9 +65,11 @@ public val MyIconPack.Home: ImageVector
                     curveTo(14.016f, 11.833f, 16.272f, 13.908f, 16.292f, 16.493f)
                     close()
                 }
-                path(fill = SolidColor(Color(0xFFD1D1D1)), stroke = null, strokeLineWidth = 0.0f,
-                        strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                        pathFillType = NonZero) {
+                path(
+                    fill = SolidColor(Color(0xFFD1D1D1)), stroke = null, strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    pathFillType = NonZero
+                ) {
                     moveTo(11.5f, 13.743f)
                     curveTo(9.912f, 13.743f, 8.625f, 14.974f, 8.625f, 16.493f)
                     verticalLineTo(21.993f)
@@ -73,7 +80,7 @@ public val MyIconPack.Home: ImageVector
                 }
             }
         }
-        .build()
+            .build()
         return _home!!
     }
 

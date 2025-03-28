@@ -1,52 +1,26 @@
 package com.example.mz_focusnews
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.ui.theme.Bg_Blue
 import com.example.mz_focusnews.ui.theme.Blue_900
 import com.example.mz_focusnews.ui.theme.Gray_200
 
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        modifier = Modifier.background(Bg_Blue),
-        bottomBar = {
-            BottomNavBar(
-                navController = navController
-            )
-        }
-    )
-    {
-        Box(
-            modifier = Modifier.padding(it)
-        ){
-            NavGraph(navController = navController)
-        }
-    }
-}
-
-@Composable
-private fun BottomNavBar(
+fun BottomNavBar(
     navController: NavHostController
 ) {
     val items = listOf(
@@ -58,6 +32,7 @@ private fun BottomNavBar(
     BottomNavigation(
         modifier = Modifier
             .height(80.dp)
+            .background(Bg_Blue)
             .clip(RoundedCornerShape(20.dp)),
         backgroundColor = Color.White
     ) {
@@ -67,13 +42,11 @@ private fun BottomNavBar(
 
         items.forEach {
             /**
-             * TODO: botton navigation item에 관한 정보
              * (1) icon image
-             * (2) label text
-             * (3) 언제 selected가 되는지
-             * (4) selected 시 색상
-             * (5) non selected 시 색상
-             * (6) onClick
+             * (2) 언제 selected가 되는지
+             * (3) selected 시 색상
+             * (4) non selected 시 색상
+             * (5) onClick
              */
             BottomNavigationItem(
                 icon = {
@@ -83,13 +56,11 @@ private fun BottomNavBar(
                         modifier = Modifier
                             .width(23.dp)
                             .height(23.dp),
-
-                        )
+                    )
                 },
+                selected = (currentRoute == it.route),
                 selectedContentColor = Blue_900,
                 unselectedContentColor = Gray_200,
-                selected = (currentRoute == it.route),
-                alwaysShowLabel = false,
                 onClick = {
                     navController.navigate(it.route) {
                         navController.graph.startDestinationRoute?.let {
@@ -98,14 +69,9 @@ private fun BottomNavBar(
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
+                alwaysShowLabel = false
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun MainPreview() {
-    MainScreen()
 }

@@ -1,9 +1,10 @@
 package com.example.mz_focusnews
 
-import com.example.mz_focusnews.ui.Category
-import com.example.mz_focusnews.ui.Home
-import com.example.mz_focusnews.ui.Quiz
-import com.example.mz_focusnews.ui.User
+import com.example.mz_focusnews.ui.MyIconPack
+import com.example.mz_focusnews.ui.myiconpack.Category
+import com.example.mz_focusnews.ui.myiconpack.Home
+import com.example.mz_focusnews.ui.myiconpack.Quiz
+import com.example.mz_focusnews.ui.myiconpack.User
 
 sealed class BottomNavItem(
     val title: String,

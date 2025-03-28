@@ -4,12 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mz_focusnews.screen.ContentScreen
+import com.example.mz_focusnews.screen.HomeScreen
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
     NavHost(navController = navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen()
+            HomeScreen(onDrawerOpen)
         }
         composable(BottomNavItem.Category.route) {
             CategoryScreen()
@@ -19,6 +21,9 @@ fun NavGraph(navController: NavHostController) {
         }
         composable(BottomNavItem.MyPage.route) {
             MyPageScreen()
+        }
+        composable("content") {
+            ContentScreen()
         }
     }
 }
