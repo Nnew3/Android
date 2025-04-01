@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mz_focusnews.screen.CategoryScreen
 import com.example.mz_focusnews.screen.ContentScreen
 import com.example.mz_focusnews.screen.HomeScreen
 
@@ -14,7 +15,7 @@ fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
             HomeScreen(onDrawerOpen)
         }
         composable(BottomNavItem.Category.route) {
-            CategoryScreen()
+            CategoryScreen(navController)
         }
         composable(BottomNavItem.Quiz.route) {
             QuizScreen()
