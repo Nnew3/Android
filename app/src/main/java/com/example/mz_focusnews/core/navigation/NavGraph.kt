@@ -7,9 +7,11 @@ import androidx.navigation.compose.composable
 import com.example.mz_focusnews.core.components.BottomNavItem
 import com.example.mz_focusnews.feature.category.CategoryScreen
 import com.example.mz_focusnews.feature.content.ContentScreen
+import com.example.mz_focusnews.feature.like.LikeNewsScreen
 import com.example.mz_focusnews.feature.home.HomeScreen
 import com.example.mz_focusnews.feature.mypage.MyPageScreen
 import com.example.mz_focusnews.feature.quiz.QuizScreen
+import com.example.mz_focusnews.feature.recent.RecentNewsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
@@ -24,10 +26,18 @@ fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
             QuizScreen()
         }
         composable(BottomNavItem.MyPage.route) {
-            MyPageScreen()
+            MyPageScreen(navController)
         }
         composable("content") {
             ContentScreen()
+        }
+
+        composable("like") {
+            LikeNewsScreen(navController)
+        }
+
+        composable("recent") {
+            RecentNewsScreen(navController)
         }
     }
 }
