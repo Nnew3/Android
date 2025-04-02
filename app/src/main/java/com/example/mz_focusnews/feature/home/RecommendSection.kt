@@ -33,7 +33,7 @@ import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_300
 import com.example.mz_focusnews.core.theme.Blue_900
-import com.example.mz_focusnews.core.theme.Gray_500
+import com.example.mz_focusnews.core.theme.Gray_600
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
@@ -103,7 +103,7 @@ fun RecommendedNewsSection() {
                                 style = TextStyle(
                                     fontFamily = preFontFamily,
                                     fontWeight = FontWeight.Medium,
-                                    color = Gray_500,
+                                    color = Gray_600,
                                     fontSize = 12.sp
                                 ),
                                 modifier = Modifier.padding(top = 8.dp)

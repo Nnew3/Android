@@ -42,7 +42,7 @@ fun BreakingSection() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(R.drawable.breaking),
+                    painter = painterResource(R.drawable.icon_breaking),
                     contentDescription = "breaking news icon",
                     modifier = Modifier.size(25.dp)
                 )

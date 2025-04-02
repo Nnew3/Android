@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.mz_focusnews.R
-import com.example.mz_focusnews.core.theme.Icon_Gray
+import com.example.mz_focusnews.core.theme.Gray_500
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
@@ -78,7 +78,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                         modifier = Modifier.size(16.dp),
                         painter = painterResource(R.drawable.icon_publisher),
                         contentDescription = "Publisher Icon",
-                        tint = Icon_Gray
+                        tint = Gray_500
                     )
 
                     Text(
@@ -87,7 +87,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                         style = TextStyle(
                             fontFamily = preFontFamily,
                             fontWeight = FontWeight.Medium,
-                            color = Icon_Gray,
+                            color = Gray_500,
                             fontSize = 12.sp
                         ),
                         modifier = Modifier.padding(start = 2.dp)
@@ -101,7 +101,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                         modifier = Modifier.size(15.dp),
                         painter = painterResource(R.drawable.icon_published_time),
                         contentDescription = "Published Time Icon",
-                        tint = Icon_Gray
+                        tint = Gray_500
                     )
 
                     Text(
@@ -109,7 +109,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                         style = TextStyle(
                             fontFamily = preFontFamily,
                             fontWeight = FontWeight.Medium,
-                            color = Icon_Gray,
+                            color = Gray_500,
                             fontSize = 12.sp
                         ),
                         modifier = Modifier.padding(start = 3.dp)
