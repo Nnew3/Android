@@ -8,9 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.example.mz_focusnews.screen.MainScreen
-import com.example.mz_focusnews.ui.theme.Bg_Blue
-import com.example.mz_focusnews.ui.theme.MZ_FocusNews_Theme
+import com.example.mz_focusnews.core.theme.Bg_Blue
+import com.example.mz_focusnews.core.theme.MZ_FocusNews_Theme
+import com.example.mz_focusnews.main.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
