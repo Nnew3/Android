@@ -1,7 +1,7 @@
 package com.example.mz_focusnews.feature.mypage
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material3.Switch
@@ -18,6 +17,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,25 +25,31 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mz_focusnews.R
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.mz_focusnews.core.components.NavItemBox
+import com.example.mz_focusnews.core.components.ToggleItemBox
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_400
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.Gray_500
-import com.example.mz_focusnews.core.theme.Icon_Gray
+import com.example.mz_focusnews.core.theme.Gray_600
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun MyPageScreen() {
+fun MyPageScreen(navController: NavController) {
 
     var alarmChecked by remember { mutableStateOf(true) }
     var locationChecked by remember { mutableStateOf(true) }
+
+    val keywordList = remember { mutableStateListOf("산불", "폭싹 속았수다", "미세먼지 위험 경보") }
+
+    var openDialog by remember { mutableStateOf(false) }
 
 
     Surface(
@@ -56,240 +62,50 @@ fun MyPageScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Bg_Blue),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            // UserInfoSection()
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 60.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.example),
-                    contentDescription = "user image",
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(RoundedCornerShape(100.dp))
-                        .background(Blue_400)
+            UserInfoSection()
+
+            QuizScoreSection()
+
+            KeywordSetSection(keywordList, onAddBtnClick = { openDialog = true })
+
+            NavItemBox("최근 본 뉴스", onClick = { navController.navigate("recent") })
+
+            NavItemBox("내가 좋아하는 뉴스", onClick = { navController.navigate("like") })
+
+            ToggleItemBox(
+                title = "속보 알림 수신 동의",
+                checked = alarmChecked,
+                onCheckedChange = { alarmChecked = it }
+            )
+
+            ToggleItemBox(
+                title = "위치 정보 이용 동의",
+                checked = locationChecked,
+                onCheckedChange = { locationChecked = it }
+            )
+
+            Text(
+                modifier = Modifier.clickable {
+                    // TODO: logout 구현
+                },
+                text = "로그아웃",
+                style = TextStyle(
+                    fontFamily = preFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Gray_500
                 )
-                Text(
-                    modifier = Modifier.padding(top = 16.dp),
-                    text = "래로미",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
-                    )
-                )
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = "fofhal@gmail.com",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                )
-            }
+            )
+        }
 
-            // QuizScoreSection()
-            Box(
-                modifier = Modifier.padding(top = 12.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(85.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "지금 내 상식 점수는?",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp
-                        )
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = "2,500 점",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                    )
-                }
-            }
-
-
-            // KeywordSettingSection()
-            Box(
-                modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(110.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = "이런 뉴스가 좋아요!",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp
-                        )
-                    )
-
-                    Text(
-                        modifier = Modifier.padding(top = 10.dp),
-                        text = "크리스피 도넛",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 20.sp
-                        )
-                    )
-                }
-            }
-
-            // RecentNewsList()
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 25.dp),
-                    text = "최근 본 뉴스",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp
-                    )
-                )
-            }
-
-            // FavoriteNewsList()
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 25.dp),
-                    text = "내가 좋아하는 뉴스",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 15.sp
-                    )
-                )
-            }
-
-            // AlarmToggleButton()
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = 25.dp),
-                        text = "속보 알림 수신 동의",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp
-                        )
-                    )
-
-                    Switch(
-                        modifier = Modifier.padding(start = 10.dp),
-                        checked = alarmChecked,
-                        onCheckedChange = { alarmChecked = it },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Blue_900,
-                            uncheckedThumbColor = Color.White,
-                            checkedTrackColor = Blue_400,
-                            uncheckedTrackColor = Gray_500
-                        )
-                    )
-                }
-            }
-
-            // LocationToggleButton()
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.padding(start = 25.dp),
-                        text = "위치 정보 이용 동의",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 15.sp
-                        )
-                    )
-
-                    Switch(
-                        modifier = Modifier.padding(start = 10.dp),
-                        checked = locationChecked,
-                        onCheckedChange = { locationChecked = it },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Blue_900,
-                            uncheckedThumbColor = Color.White,
-                            checkedTrackColor = Blue_400,
-                            uncheckedTrackColor = Gray_500
-                        )
-                    )
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "로그아웃",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Icon_Gray
-                    )
-                )
-            }
+        if (openDialog) {
+            AddKeywordDialog(
+                onDismiss = { openDialog = false },
+                onKeywordAdded = { keywordList.add(it) })
         }
     }
 }
@@ -297,5 +113,5 @@ fun MyPageScreen() {
 @Preview
 @Composable
 fun MyPagePreview() {
-    MyPageScreen()
+    MyPageScreen(rememberNavController())
 }
