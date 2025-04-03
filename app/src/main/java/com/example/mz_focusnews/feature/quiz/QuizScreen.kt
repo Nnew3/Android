@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.mz_focusnews.core.components.CustomIndicator
 import com.example.mz_focusnews.core.theme.Bg_Blue
 
 @Composable
@@ -44,24 +45,7 @@ fun QuizScreen() {
             }
         }
 
-        Row(
-            Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Top
-        ) {
-            repeat(pagerState.pageCount) { iteration ->
-                val color =  if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
-
-                Box(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .size(14.dp)
-                )
-            }
-        }
+        CustomIndicator(pagerState)
 
     }
 }
