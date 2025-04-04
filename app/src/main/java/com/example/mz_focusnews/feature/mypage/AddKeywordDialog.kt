@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +54,7 @@ fun AddKeywordDialog(
     Dialog(
         onDismissRequest = { onDismiss() },
     ) {
-        Surface(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(20.dp))
@@ -136,7 +137,7 @@ fun AddKeywordDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 12.dp),
+                        .padding(top = 20.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                 ) {
@@ -155,7 +156,7 @@ fun AddKeywordDialog(
                                 fontSize = 10.sp,
                                 color = Color.Black
                             ),
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }
 
@@ -177,7 +178,7 @@ fun AddKeywordDialog(
                                 fontSize = 10.sp,
                                 color = Color.Black
                             ),
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            modifier = Modifier.padding(horizontal = 8.dp)
                         )
                     }
                 }
@@ -198,5 +199,4 @@ fun DialogPreview() {
     ) {
         AddKeywordDialog({ }, { })
     }
-
 }
