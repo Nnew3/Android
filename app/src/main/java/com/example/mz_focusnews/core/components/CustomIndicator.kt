@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -18,16 +19,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
 
-private const val MULTIPLIER_SELECTED_PAGE = 4
-private val baseWidth = 10.dp
-private val spacing = 10.dp
-private val height = 10.dp
+private const val MULTIPLIER_SELECTED_PAGE = 8 // indicator 길이 조절
+private val spacing = 8.dp
+
+private val baseWidth = 6.dp
+private val height = 6.dp
 
 @Composable
 fun CustomIndicator(pagerState: PagerState) {
 
     Row(
-        Modifier.fillMaxWidth(),
+        Modifier.fillMaxWidth().padding(top = 25.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.Top
     ) {
