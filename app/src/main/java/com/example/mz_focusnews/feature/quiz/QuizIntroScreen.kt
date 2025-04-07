@@ -44,7 +44,7 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 @Composable
 fun QuizIntroScreen(navController: NavController) {
 
-    val checkReadTodayNews = remember { false }
+    val checkReadTodayNews = remember { true }
     val gameBtnColor = if (checkReadTodayNews) Blue_900 else Gray_400
 
     var openDialog by remember { mutableStateOf(false) }
@@ -138,7 +138,11 @@ fun QuizIntroScreen(navController: NavController) {
 
 
             TextButton(
-                onClick = { },
+                onClick = {
+                    if(checkReadTodayNews){
+                        navController.navigate("quiz_play")
+                    }
+                },
                 modifier = Modifier
                     .padding(top = 20.dp)
                     .background(gameBtnColor, RoundedCornerShape(18.dp))
@@ -155,72 +159,8 @@ fun QuizIntroScreen(navController: NavController) {
                 )
             }
 
-
             if (!checkReadTodayNews) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Text(
-                            text = "오늘의 뉴스를 봐야 시작 버튼이 활성화 돼요!",
-                            style = TextStyle(
-                                fontFamily = preFontFamily,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 12.sp
-                            )
-                        )
-
-                        Icon(
-                            modifier = Modifier.size(18.dp),
-                            painter = painterResource(R.drawable.icon_double_arrow),
-                            contentDescription = "Double Arrow"
-                        )
-
-                        Text(
-                            text = "오늘의 뉴스 보러가기",
-                            style = TextStyle(
-                                fontFamily = preFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 14.sp
-                            )
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Today_Blue, RoundedCornerShape(12.dp))
-                                .clickable { navController.navigate("content") },
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(vertical = 15.dp, horizontal = 15.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.example2),
-                                    contentDescription = "Quiz Intro image",
-                                    modifier = Modifier.width(70.dp)
-                                )
-
-                                Text(
-                                    modifier = Modifier.padding(start = 8.dp),
-                                    text = "\'인도에 진심\' 크래프톤, 현지 게임사 인수한다",
-                                    style = TextStyle(
-                                        fontFamily = preFontFamily,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontSize = 13.sp
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
+                TodayNewsGuide(navController)
             }
         }
     }
@@ -229,6 +169,74 @@ fun QuizIntroScreen(navController: NavController) {
         QuizRuleDialog(
             onDismiss = { openDialog = false }
         )
+    }
+}
+
+@Composable
+private fun TodayNewsGuide(navController: NavController) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "오늘의 뉴스를 봐야 시작 버튼이 활성화 돼요!",
+                style = TextStyle(
+                    fontFamily = preFontFamily,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp
+                )
+            )
+
+            Icon(
+                modifier = Modifier.size(18.dp),
+                painter = painterResource(R.drawable.icon_double_arrow),
+                contentDescription = "Double Arrow"
+            )
+
+            Text(
+                text = "오늘의 뉴스 보러가기",
+                style = TextStyle(
+                    fontFamily = preFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Today_Blue, RoundedCornerShape(12.dp))
+                    .clickable { navController.navigate("content") },
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Row(
+                    modifier = Modifier.padding(vertical = 15.dp, horizontal = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.example2),
+                        contentDescription = "Quiz Intro image",
+                        modifier = Modifier.width(70.dp)
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = "\'인도에 진심\' 크래프톤, 현지 게임사 인수한다",
+                        style = TextStyle(
+                            fontFamily = preFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 13.sp
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 

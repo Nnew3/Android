@@ -11,6 +11,7 @@ import com.example.mz_focusnews.feature.like.LikeNewsScreen
 import com.example.mz_focusnews.feature.home.HomeScreen
 import com.example.mz_focusnews.feature.mypage.MyPageScreen
 import com.example.mz_focusnews.feature.quiz.QuizIntroScreen
+import com.example.mz_focusnews.feature.quiz.QuizPlayScreen
 import com.example.mz_focusnews.feature.quiz.QuizScreen
 import com.example.mz_focusnews.feature.quiz.RankingScreen
 import com.example.mz_focusnews.feature.recent.RecentNewsScreen
@@ -44,6 +45,10 @@ fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
 
         composable("quiz_intro") {
             QuizIntroScreen(navController)
+        }
+
+        composable("quiz_play"){
+            QuizPlayScreen()
         }
 
         composable("ranking") {
