@@ -22,3 +22,5 @@ val Gray_500 = Color(0xFF8C8C8C)
 val Gray_600 = Color(0xFF484848)
 
 val Yellow = Color(0xFFFFF1C4)
+val Red = Color(0xFFFE6465)
+val Blue = Color(0xFF6483FF)
