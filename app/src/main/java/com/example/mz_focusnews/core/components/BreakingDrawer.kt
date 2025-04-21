@@ -2,17 +2,14 @@ package com.example.mz_focusnews.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,14 +52,9 @@ fun DrawerScreen() {
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 notiList.forEach() { noti ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Blue_300)
-                            .padding(horizontal = 18.dp, vertical = 18.dp)
-                    ) {
+                    RoundedCornerBox(radius = 12.dp, bgColor = Blue_300) {
                         Text(
+                            modifier = Modifier.fillMaxWidth(),
                             text = noti,
                             style = TextStyle(
                                 fontFamily = preFontFamily,
@@ -71,7 +63,6 @@ fun DrawerScreen() {
                             ),
                         )
                     }
-
                 }
             }
         }
