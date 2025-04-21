@@ -23,6 +23,7 @@ fun QuizPlayScreen() {
     var userSelectedIndex by remember { mutableStateOf(-1) } // 사용자가 선택한 보기
     var isAnswered by remember { mutableStateOf(false) } // 사용자가 응답을 했는지 체크
     var isCorrect by remember { mutableStateOf(false) } // 정답/오답 확인을 위한 상태
+    var sec by remember { mutableStateOf(5) } // 다음 문제로 넘어가기까지 남은 시간
 
     val sampleQuizList = listOf(
         Quiz(
@@ -81,12 +82,15 @@ fun QuizPlayScreen() {
 
     LaunchedEffect(isAnswered) {
         if (isAnswered) {  // 답변했을 때만 타이머 시작
-            delay(5000)    // 5초 대기
+            for (time in 5 downTo 1) {
+                sec = time
+                delay(1000)
+            }
 
             if (currentQuestionIndex < sampleQuizList.size - 1) {
                 currentQuestionIndex++  // 다음 문제로
                 isAnswered = false      // 상태 초기화
-                userSelectedIndex = -1
+                userSelectedIndex = -1 // 사용자 선택 초기화
             }
         }
     }
@@ -107,7 +111,8 @@ fun QuizPlayScreen() {
                 isCorrect = index == currentQuiz.correctAnswer
                 isAnswered = true
 
-            }
+            },
+            remainingTime = sec
         )
     }
 }

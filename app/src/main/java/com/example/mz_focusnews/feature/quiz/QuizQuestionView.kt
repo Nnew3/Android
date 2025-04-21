@@ -1,20 +1,13 @@
 package com.example.mz_focusnews.feature.quiz
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -31,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.components.QuizProgressBar
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue
-import com.example.mz_focusnews.core.theme.Gray_250
 import com.example.mz_focusnews.core.theme.Gray_400
 import com.example.mz_focusnews.core.theme.Red
 import com.example.mz_focusnews.core.theme.preFontFamily
@@ -44,30 +37,19 @@ fun QuizQuestionView(
     userSelectedIndex: Int,
     isAnswered: Boolean,
     currentQuestionIndex: Int, // 현재 문제 인덱스 추가
-    onAnswerSelected: (index: Int) -> Unit
+    onAnswerSelected: (index: Int) -> Unit,
+    remainingTime: Int
 ) {
-    val questionList = listOf("50점", "10점", "20점", "30점", "40점")
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Bg_Blue),
+            .background(Bg_Blue)
+            .padding(top = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.padding(top = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            questionList.forEachIndexed { index, score ->
-                // 현재 문제 인덱스와 일치하고 답변했으면 색상 변경
-                val boxColor = if (index == currentQuestionIndex && isAnswered) {
-                    if (userSelectedIndex == quiz.correctAnswer) Blue else Red
-                } else {
-                    Gray_250
-                }
-                ScoreBox(score, boxColor)
-            }
-        }
+
+        // 퀴즈 진행 바
+        QuizProgressBar(currentQuestionIndex)
 
         // 이미지 - 정답/오답에 따라 다른 이미지 표시
         val imageRes = when {
@@ -98,10 +80,7 @@ fun QuizQuestionView(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 30.dp, start = 40.dp, end = 40.dp)
-                .clickable {
-
-                },
+                .padding(top = 30.dp, start = 30.dp, end = 30.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -142,51 +121,16 @@ fun QuizQuestionView(
 
         if (isAnswered) {
             Text(
-                text = "5초 뒤 다음 문제로 넘어갑니다",
+                text = "${remainingTime}초 뒤 다음 문제로 넘어갑니다",
                 style = TextStyle(
                     fontFamily = preFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp,
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 24.dp),
                 textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-// TODO: 색상 유지하도록 수정할 것
-@Composable
-fun ScoreBox(score: String, color: Color) {
-    Column(
-        modifier = Modifier.wrapContentSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.img_quiz_score),
-            contentDescription = "Score Icon",
-            modifier = Modifier.size(32.dp)
-        )
-
-        Box(
-            modifier = Modifier
-                .background(color, RoundedCornerShape(8.dp))
-                .border(
-                    BorderStroke(1.dp, Color.Black),
-                    RoundedCornerShape(8.dp)
-                )
-                .padding(horizontal = 11.dp, vertical = 5.dp)
-        ) {
-            Text(
-                text = score,
-                style = TextStyle(
-                    fontFamily = preFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 10.sp
-                )
             )
         }
     }
@@ -234,13 +178,13 @@ fun QuizQuestionPreview() {
             )
         )
 
-        // 첫 번째 퀴즈 표시(실제 앱에서는 상태에 따라 변경)
         QuizQuestionView(
             quiz = sampleQuizzes[0],
-            userSelectedIndex = -1,  // 아무것도 선택되지 않음
+            userSelectedIndex = -1,
             isAnswered = true,
-            currentQuestionIndex = 0, // 현재 인덱스 추가
-            onAnswerSelected = { index -> /* 프리뷰에서는 아무 작업 없음 */ }
+            currentQuestionIndex = 0,
+            onAnswerSelected = { },
+            remainingTime = 5
         )
     }
 }

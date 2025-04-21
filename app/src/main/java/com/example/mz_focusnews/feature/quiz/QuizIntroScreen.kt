@@ -75,7 +75,7 @@ fun QuizIntroScreen(navController: NavController) {
                 painter = painterResource(R.drawable.image_quiz_intro),
                 contentDescription = "Quiz Intro image",
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(220.dp)
                     .padding(top = 40.dp)
             )
 
@@ -105,7 +105,7 @@ fun QuizIntroScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp)
+                    .padding(top = 25.dp)
                     .background(Color.White, RoundedCornerShape(12.dp))
             ) {
                 Column(
