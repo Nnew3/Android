@@ -36,16 +36,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.QuizRuleDialog
 import com.example.mz_focusnews.core.theme.Bg_Blue
-import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.Gray_400
 import com.example.mz_focusnews.core.theme.Today_Blue
+import com.example.mz_focusnews.core.theme.Yellow_200
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
 fun QuizIntroScreen(navController: NavController) {
 
     val checkReadTodayNews = remember { true }
-    val gameBtnColor = if (checkReadTodayNews) Blue_900 else Gray_400
+    val gameBtnColor = if (checkReadTodayNews) Yellow_200 else Gray_400
+    val btnTextColor = if (checkReadTodayNews) Color.Black else Color.White
 
     var openDialog by remember { mutableStateOf(false) }
 
@@ -105,7 +106,7 @@ fun QuizIntroScreen(navController: NavController) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 25.dp)
+                    .padding(top = 20.dp)
                     .background(Color.White, RoundedCornerShape(12.dp))
             ) {
                 Column(
@@ -119,8 +120,8 @@ fun QuizIntroScreen(navController: NavController) {
                         text = "현재 래로미 님의 상식 점수는",
                         style = TextStyle(
                             fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
                         )
                     )
 
@@ -129,8 +130,8 @@ fun QuizIntroScreen(navController: NavController) {
                         text = "2,500 점이에요!",
                         style = TextStyle(
                             fontFamily = preFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 18.sp
                         )
                     )
                 }
@@ -139,7 +140,7 @@ fun QuizIntroScreen(navController: NavController) {
 
             TextButton(
                 onClick = {
-                    if(checkReadTodayNews){
+                    if (checkReadTodayNews) {
                         navController.navigate("quiz_play")
                     }
                 },
@@ -153,7 +154,7 @@ fun QuizIntroScreen(navController: NavController) {
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
-                        color = Color.White
+                        color = btnTextColor
                     ),
                     modifier = Modifier.padding(horizontal = 28.dp)
                 )

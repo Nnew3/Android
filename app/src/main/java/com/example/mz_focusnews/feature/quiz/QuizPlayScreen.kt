@@ -13,11 +13,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.mz_focusnews.core.components.QuizResultDialog
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import kotlinx.coroutines.delay
 
 @Composable
-fun QuizPlayScreen() {
+fun QuizPlayScreen(navController: NavController) {
 
     var currentQuestionIndex by remember { mutableStateOf(0) } // 현재 풀고 있는 퀴즈의 인덱스
 
@@ -28,6 +31,17 @@ fun QuizPlayScreen() {
     var isCorrect by remember { mutableStateOf(false) } // 정답/오답 확인을 위한 상태
 
     var sec by remember { mutableStateOf(5) } // 다음 문제로 넘어가기까지 남은 시간
+
+    var openDialog by remember { mutableStateOf(false) }
+
+    var totalScore by remember { mutableStateOf(0) }
+    val quizScoreMap = mapOf(
+        0 to 50,
+        1 to 10,
+        2 to 20,
+        3 to 30,
+        4 to 40
+    )
 
     val sampleQuizList = listOf(
         Quiz(
@@ -85,10 +99,10 @@ fun QuizPlayScreen() {
     val currentQuiz = (sampleQuizList[currentQuestionIndex])
 
     LaunchedEffect(isSubmitted) {
-        if (isSubmitted) {  // 응답을 제출했을 때 타이머 시작
+        if (isSubmitted) {  // 응답을 제출했을 때 타이머 시작 (5초)
             for (time in 5 downTo 1) {
                 sec = time
-                delay(1000)
+                delay(1000) // 1000 = 1초
             }
 
             if (currentQuestionIndex < sampleQuizList.size - 1) {
@@ -96,6 +110,8 @@ fun QuizPlayScreen() {
                 isSubmitted = false      // 상태 초기화
                 isChecked = false
                 userSelectedIndex = -1 // 사용자 선택 초기화
+            } else {
+                openDialog = true
             }
         }
     }
@@ -118,15 +134,35 @@ fun QuizPlayScreen() {
             },
             onSubmitted = { submittedIndex ->
                 isCorrect = submittedIndex == currentQuiz.correctAnswer
+                if (isCorrect) {
+                    totalScore += quizScoreMap[currentQuestionIndex] ?: 0
+                } else{
+                    totalScore -= quizScoreMap[currentQuestionIndex] ?: 0
+                }
                 isSubmitted = true
+            },
+            showResultDialog = {
+                openDialog = true
             },
             remainingTime = sec
         )
+
+        if(openDialog){
+            QuizResultDialog(
+                totalScore = totalScore,
+                navigateToIntro = {
+                    navController.navigate("quiz_intro")
+                    openDialog = false
+                },
+                onDismiss = { } // do nothing
+            )
+        }
+
     }
 }
 
 @Preview
 @Composable
 fun QuizPlayPreview() {
-    QuizPlayScreen()
+    QuizPlayScreen(rememberNavController())
 }

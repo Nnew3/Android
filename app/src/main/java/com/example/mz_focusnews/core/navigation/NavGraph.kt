@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import com.example.mz_focusnews.core.components.BottomNavItem
 import com.example.mz_focusnews.feature.category.CategoryScreen
 import com.example.mz_focusnews.feature.content.ContentScreen
-import com.example.mz_focusnews.feature.like.LikeNewsScreen
 import com.example.mz_focusnews.feature.home.HomeScreen
+import com.example.mz_focusnews.feature.like.LikeNewsScreen
 import com.example.mz_focusnews.feature.mypage.MyPageScreen
 import com.example.mz_focusnews.feature.quiz.QuizIntroScreen
 import com.example.mz_focusnews.feature.quiz.QuizPlayScreen
@@ -47,8 +47,8 @@ fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
             QuizIntroScreen(navController)
         }
 
-        composable("quiz_play"){
-            QuizPlayScreen()
+        composable("quiz_play") {
+            QuizPlayScreen(navController)
         }
 
         composable("ranking") {

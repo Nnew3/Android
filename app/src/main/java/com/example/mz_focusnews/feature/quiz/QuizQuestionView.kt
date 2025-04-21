@@ -3,11 +3,14 @@ package com.example.mz_focusnews.feature.quiz
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -26,8 +29,10 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.QuizProgressBar
 import com.example.mz_focusnews.core.theme.Bg_Blue
-import com.example.mz_focusnews.core.theme.Blue
+import com.example.mz_focusnews.core.theme.Blue_800
+import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.Gray_400
+import com.example.mz_focusnews.core.theme.Green
 import com.example.mz_focusnews.core.theme.Red
 import com.example.mz_focusnews.core.theme.preFontFamily
 
@@ -35,9 +40,12 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 fun QuizQuestionView(
     quiz: Quiz,
     userSelectedIndex: Int,
-    isAnswered: Boolean,
+    isChecked: Boolean,
+    isSubmitted: Boolean,
     currentQuestionIndex: Int, // 현재 문제 인덱스 추가
-    onAnswerSelected: (index: Int) -> Unit,
+    onSelected: (selectedIndex: Int) -> Unit,
+    onSubmitted: (submittedIndex: Int) -> Unit,
+    showResultDialog: () -> Unit,
     remainingTime: Int
 ) {
     Column(
@@ -53,7 +61,7 @@ fun QuizQuestionView(
 
         // 이미지 - 정답/오답에 따라 다른 이미지 표시
         val imageRes = when {
-            !isAnswered -> R.drawable.img_quiz_play // 기본 이미지
+            !isSubmitted -> R.drawable.img_quiz_play // 기본 이미지
             userSelectedIndex == quiz.correctAnswer -> R.drawable.img_quiz_answer // 정답 이미지
             else -> R.drawable.img_quiz_wrong // 오답 이미지
         }
@@ -84,19 +92,16 @@ fun QuizQuestionView(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            quiz.options.forEachIndexed { index, option ->
-                val bgColor = if (isAnswered) {
-                    when {
-                        index == quiz.correctAnswer -> Blue // 정답: 파란색
-                        index == userSelectedIndex && index != quiz.correctAnswer -> Red // 틀린 선택: 빨간색
-                        else -> Gray_400
-                    }
-                } else {
-                    Gray_400 // 아직 답변하지 않았으면 회색
+            quiz.options.forEachIndexed { optionIndex, option ->
+                val bgColor = when {
+                    isSubmitted && optionIndex == quiz.correctAnswer -> Green    // 정답
+                    isSubmitted && optionIndex == userSelectedIndex -> Red  // 오답
+                    isChecked && optionIndex == userSelectedIndex -> Blue_800   // 선택한 보기
+                    else -> Gray_400    // 기본
                 }
 
                 Button(
-                    onClick = { onAnswerSelected(index) },
+                    onClick = { onSelected(optionIndex) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = bgColor,
                         disabledContainerColor = bgColor
@@ -112,27 +117,73 @@ fun QuizQuestionView(
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 6.dp),
+                            .padding(vertical = 6.dp, horizontal = 6.dp),
                         textAlign = TextAlign.Center
                     )
                 }
             }
         }
 
-        if (isAnswered) {
-            Text(
-                text = "${remainingTime}초 뒤 다음 문제로 넘어갑니다",
-                style = TextStyle(
-                    fontFamily = preFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp,
-                ),
+        if (isSubmitted) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Text(
+                    text = "${remainingTime}초 뒤 다음 문제로 넘어갑니다",
+                    style = TextStyle(
+                        fontFamily = preFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 14.sp
+                    ),
+                    modifier = Modifier.padding(bottom = 30.dp)
+                )
+            }
+        } else {
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp),
-                textAlign = TextAlign.Center
-            )
+                    .padding(top = 24.dp, start = 30.dp, end = 30.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                QuizActionButton(
+                    onClick = { showResultDialog() },
+                    btnText = "그만두기"
+                )
+
+                QuizActionButton(
+                    onClick = { onSubmitted(userSelectedIndex) },
+                    btnText = "제출하기"
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun QuizActionButton(
+    onClick: () -> Unit,
+    btnText: String
+) {
+    Button(
+        onClick = { onClick() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Blue_900,
+        )
+    ) {
+        Text(
+            text = btnText,
+            style = TextStyle(
+                fontFamily = preFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 14.sp,
+                color = Color.White
+            ),
+            modifier = Modifier
+                .wrapContentWidth()
+                .padding(vertical = 6.dp, horizontal = 20.dp),
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -147,7 +198,7 @@ fun QuizQuestionPreview() {
     ) {
         val sampleQuizzes = listOf(
             Quiz(
-                question = "다음 중 코틀린(Kotlin)의 특징이 아닌 것은?",
+                question = "다음 중 코틀린의 특징이 아닌 것은?",
                 options = listOf(
                     "Null 안정성 지원",
                     "스마트 캐스팅",
@@ -181,9 +232,12 @@ fun QuizQuestionPreview() {
         QuizQuestionView(
             quiz = sampleQuizzes[0],
             userSelectedIndex = -1,
-            isAnswered = true,
+            isChecked = false,
+            isSubmitted = false,
             currentQuestionIndex = 0,
-            onAnswerSelected = { },
+            onSelected = { },
+            onSubmitted = { },
+            showResultDialog = { },
             remainingTime = 5
         )
     }
