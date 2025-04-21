@@ -20,9 +20,13 @@ import kotlinx.coroutines.delay
 fun QuizPlayScreen() {
 
     var currentQuestionIndex by remember { mutableStateOf(0) } // 현재 풀고 있는 퀴즈의 인덱스
+
     var userSelectedIndex by remember { mutableStateOf(-1) } // 사용자가 선택한 보기
-    var isAnswered by remember { mutableStateOf(false) } // 사용자가 응답을 했는지 체크
+    var isChecked by remember { mutableStateOf(false) } // 사용자가 보기를 선택했는지 확인
+    var isSubmitted by remember { mutableStateOf(false) } // 사용자가 응답을 제출했는지 확인
+
     var isCorrect by remember { mutableStateOf(false) } // 정답/오답 확인을 위한 상태
+
     var sec by remember { mutableStateOf(5) } // 다음 문제로 넘어가기까지 남은 시간
 
     val sampleQuizList = listOf(
@@ -80,8 +84,8 @@ fun QuizPlayScreen() {
 
     val currentQuiz = (sampleQuizList[currentQuestionIndex])
 
-    LaunchedEffect(isAnswered) {
-        if (isAnswered) {  // 답변했을 때만 타이머 시작
+    LaunchedEffect(isSubmitted) {
+        if (isSubmitted) {  // 응답을 제출했을 때 타이머 시작
             for (time in 5 downTo 1) {
                 sec = time
                 delay(1000)
@@ -89,7 +93,8 @@ fun QuizPlayScreen() {
 
             if (currentQuestionIndex < sampleQuizList.size - 1) {
                 currentQuestionIndex++  // 다음 문제로
-                isAnswered = false      // 상태 초기화
+                isSubmitted = false      // 상태 초기화
+                isChecked = false
                 userSelectedIndex = -1 // 사용자 선택 초기화
             }
         }
@@ -104,13 +109,16 @@ fun QuizPlayScreen() {
         QuizQuestionView(
             quiz = currentQuiz,
             userSelectedIndex = userSelectedIndex,
-            isAnswered = isAnswered,
+            isChecked = isChecked,
+            isSubmitted = isSubmitted,
             currentQuestionIndex = currentQuestionIndex,
-            onAnswerSelected = { index ->
-                userSelectedIndex = index
-                isCorrect = index == currentQuiz.correctAnswer
-                isAnswered = true
-
+            onSelected = { selectedIndex -> // 사용자가 선택한 인덱스 변경, hasSelected 값 변경
+                userSelectedIndex = selectedIndex
+                isChecked = true
+            },
+            onSubmitted = { submittedIndex ->
+                isCorrect = submittedIndex == currentQuiz.correctAnswer
+                isSubmitted = true
             },
             remainingTime = sec
         )
