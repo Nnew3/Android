@@ -2,6 +2,7 @@ package com.example.mz_focusnews.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,7 @@ import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun NewsSection() {
+fun NewsSection(navigateToContent: () -> Unit) {
     val pagerState = rememberPagerState { 3 } // 총 페이지 수 설정
 
     var text = ""
@@ -107,7 +108,8 @@ fun NewsSection() {
                                     fontFamily = preFontFamily,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 15.sp
-                                )
+                                ),
+                                modifier = Modifier.clickable { navigateToContent() }
                             )
                             Text(
                                 text = "산불 사태로 인한 국가유산 피해 사례가 27건으로 ...",
@@ -143,5 +145,5 @@ fun NewsSection() {
 @Preview
 @Composable
 fun NewsPreview() {
-    NewsSection()
+    NewsSection({ })
 }

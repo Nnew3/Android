@@ -20,7 +20,7 @@ import com.example.mz_focusnews.feature.recent.RecentNewsScreen
 fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
     NavHost(navController = navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen(onDrawerOpen)
+            HomeScreen(navController, onDrawerOpen)
         }
         composable(BottomNavItem.Category.route) {
             CategoryScreen(navController)

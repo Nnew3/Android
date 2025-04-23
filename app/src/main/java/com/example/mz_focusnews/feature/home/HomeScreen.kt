@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_200
 
 @Composable
-fun HomeScreen(onDrawerOpen: () -> Unit) {
+fun HomeScreen(navController: NavController, onDrawerOpen: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -33,9 +35,9 @@ fun HomeScreen(onDrawerOpen: () -> Unit) {
             // Breaking Drawer Open Button
             UserGuideSection(onDrawerOpen)
 
-            BreakingSection()
+            BreakingSection({ navigateToContent(navController) })
 
-            NewsSection()
+            NewsSection({ navigateToContent(navController) })
 
             Spacer(
                 modifier = Modifier
@@ -44,13 +46,17 @@ fun HomeScreen(onDrawerOpen: () -> Unit) {
                     .background(Gray_200)
             )
 
-            RecommendedNewsSection()
+            RecommendedNewsSection({ navigateToContent(navController) })
         }
     }
+}
+
+fun navigateToContent(navController: NavController) {
+    navController.navigate("content")
 }
 
 @Preview
 @Composable
 fun HomePreview() {
-    HomeScreen({})
+    HomeScreen(rememberNavController(), {})
 }

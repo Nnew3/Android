@@ -2,6 +2,7 @@ package com.example.mz_focusnews.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +26,7 @@ import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun BreakingSection() {
+fun BreakingSection(navigateToContent: () -> Unit) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +48,7 @@ fun BreakingSection() {
                     modifier = Modifier.size(25.dp)
                 )
                 Text(
-                    modifier = Modifier.padding(start = 12.dp),
+                    modifier = Modifier.padding(start = 12.dp).clickable { navigateToContent() },
                     text = "산림청 \"경북 영덕 산불 주불 진화\" 평균 진화율 94% 넘어",
                     style = TextStyle(
                         fontFamily = preFontFamily,
@@ -63,5 +64,5 @@ fun BreakingSection() {
 @Preview
 @Composable
 fun BreakingPreview() {
-    BreakingSection()
+    BreakingSection({ })
 }
