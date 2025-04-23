@@ -16,12 +16,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mz_focusnews.core.api.model.BreakingItem
 import com.example.mz_focusnews.core.theme.Blue_300
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun DrawerScreen() {
-    val notiList = List(10) { "$it 번째 속보입니다" }
+fun DrawerScreen(
+    onDrawerClosed: () -> Unit,
+    breakingNews: List<BreakingItem>,
+    navigateToContent: (id: Long) -> Unit
+) {
+    if (breakingNews.isEmpty()) {
+        return
+    }
 
     Surface(
         modifier = Modifier
@@ -44,24 +51,31 @@ fun DrawerScreen() {
                     fontSize = 20.sp
                 )
             )
-
-            Column(
-                modifier = Modifier
-                    .background(Color.White)
-                    .padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                notiList.forEach() { noti ->
-                    RoundedCornerBox(radius = 12.dp, bgColor = Blue_300) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = noti,
-                            style = TextStyle(
-                                fontFamily = preFontFamily,
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 15.sp
-                            ),
-                        )
+            breakingNews.let { news ->
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(top = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    news.forEach { item ->
+                        RoundedCornerBox(
+                            radius = 12.dp,
+                            bgColor = Blue_300,
+                            onClick = {
+                                navigateToContent(item.id)
+                                onDrawerClosed()
+                            }) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = item.title,
+                                style = TextStyle(
+                                    fontFamily = preFontFamily,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 15.sp
+                                ),
+                            )
+                        }
                     }
                 }
             }
@@ -72,5 +86,5 @@ fun DrawerScreen() {
 @Preview
 @Composable
 fun BreakingDrawerPreview() {
-    DrawerScreen()
+    DrawerScreen({ }, listOf()) { }
 }

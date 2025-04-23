@@ -28,6 +28,7 @@ fun HomeScreen(
     onDrawerOpen: () -> Unit
 ) {
     val newsState = viewModel.newsState.collectAsState().value  // StateFlow 관찰
+    val breakingState = viewModel.breakingState.collectAsState().value
 
     Surface(
         modifier = Modifier
@@ -44,13 +45,12 @@ fun HomeScreen(
             // Breaking Drawer Open Button
             UserGuideSection(onDrawerOpen)
 
-            BreakingSection({
-//                navigateToContent(navController)
-            })
+            BreakingSection(breakingState){ newsId ->
+                navigateToContent(newsId, navController)
+            }
 
             NewsSection(newsState) { newsId ->
                 navigateToContent(newsId, navController)
-
             }
             Spacer(
                 modifier = Modifier
