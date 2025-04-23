@@ -15,6 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.mz_focusnews.core.components.BottomNavItem.Category
+import com.example.mz_focusnews.core.components.BottomNavItem.Home
+import com.example.mz_focusnews.core.components.BottomNavItem.MyPage
+import com.example.mz_focusnews.core.components.BottomNavItem.Quiz
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.Gray_300
@@ -24,10 +28,10 @@ fun BottomNavBar(
     navController: NavHostController
 ) {
     val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Category,
-        BottomNavItem.Quiz,
-        BottomNavItem.MyPage
+        Home,
+        Category,
+        Quiz,
+        MyPage
     )
     BottomNavigation(
         modifier = Modifier
