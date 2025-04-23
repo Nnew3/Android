@@ -2,6 +2,7 @@ package com.example.mz_focusnews.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,7 @@ import com.example.mz_focusnews.core.theme.Gray_600
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun RecommendedNewsSection() {
+fun RecommendedNewsSection(navigateToContent: () -> Unit) {
     val newsList = List(10) { "뉴스 제목 $it" }
 
     Surface(
@@ -73,7 +74,8 @@ fun RecommendedNewsSection() {
                             .height(280.dp)
                             .width(210.dp)
                             .background(Color.White)
-                            .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 14.dp),
+                            .padding(start = 16.dp, top = 20.dp, end = 16.dp, bottom = 14.dp)
+                            .clickable { navigateToContent() },
                     ) {
                         Column(
                             modifier = Modifier
@@ -140,5 +142,5 @@ fun RecommendedNewsSection() {
 @Preview
 @Composable
 fun RecommendPreview() {
-    RecommendedNewsSection()
+    RecommendedNewsSection({ })
 }
