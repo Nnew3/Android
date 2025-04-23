@@ -1,6 +1,10 @@
 package com.example.mz_focusnews.feature.content
 
+import android.content.Context
+import android.net.Uri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,8 +58,9 @@ fun ContentScreen(
     val contentState = viewModel.contentState.collectAsState().value  // StateFlow 관찰
 
     var isBookmarked by remember { mutableStateOf(false) } // 북마크 여부
-
     val iconRes = if (isBookmarked) MyIconPack.Bookmark else MyIconPack.NonBookmark
+
+    val context = LocalContext.current
 
     LaunchedEffect(newsId) {
         val id = newsId.toLongOrNull() ?: 0L
@@ -109,7 +115,10 @@ fun ContentScreen(
                             contentDescription = "News Image",
                             modifier = Modifier
                                 .clip(RoundedCornerShape(12.dp))
-                                .height(210.dp),
+                                .height(210.dp)
+                                .clickable {
+                                    openWebPage(context, detail.link)
+                                },
                             contentScale = ContentScale.Crop
                         )
 
@@ -209,6 +218,16 @@ fun ContentScreen(
             }
         }
     }
+}
+
+// 웹으로 이동하는 함수
+private fun openWebPage(context: Context, url: String) {
+    if (url.isEmpty()) return
+
+    val customTabsIntent = CustomTabsIntent.Builder()
+        .build()
+
+    customTabsIntent.launchUrl(context, Uri.parse(url))
 }
 
 @Preview

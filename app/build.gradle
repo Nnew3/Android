@@ -134,6 +134,10 @@ android {
         // image url
         implementation(libs.coil.compose)
 
+        // custom tab
+        implementation("androidx.browser:browser:1.8.0")
+
+
     }
 }
 
