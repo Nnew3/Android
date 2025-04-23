@@ -9,16 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import com.example.mz_focusnews.core.theme.MyIconPack
-import com.example.mz_focusnews.core.theme.myiconpack.Back
 
 @Composable
-fun BackBtn(navController: NavController, modifier: Modifier = Modifier) {
+fun BookmarkBtn(modifier: Modifier = Modifier, onClick: () -> Unit, iconRes: ImageVector) {
     IconButton(
         onClick = {
-            navController.popBackStack()
+            onClick()
         },
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -26,9 +24,10 @@ fun BackBtn(navController: NavController, modifier: Modifier = Modifier) {
             .background(Color.White)
     ) {
         Icon(
-            imageVector = MyIconPack.Back,
-            modifier = Modifier.size(16.dp),
+            imageVector = iconRes,
+            modifier = Modifier.size(17.dp),
             contentDescription = null,
         )
     }
 }
+

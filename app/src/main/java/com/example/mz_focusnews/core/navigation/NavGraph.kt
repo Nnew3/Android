@@ -32,7 +32,7 @@ fun NavGraph(navController: NavHostController, onDrawerOpen: () -> Unit) {
             MyPageScreen(navController)
         }
         composable("content") {
-            ContentScreen()
+            ContentScreen(navController)
         }
 
         composable("like") {

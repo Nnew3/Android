@@ -1,7 +1,10 @@
 package com.example.mz_focusnews.core.theme
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.mz_focusnews.core.theme.myiconpack.Back
 import com.example.mz_focusnews.core.theme.myiconpack.Bell
+import com.example.mz_focusnews.core.theme.myiconpack.Bookmark
+import com.example.mz_focusnews.core.theme.myiconpack.NonBookmark
 import com.example.mz_focusnews.core.theme.myiconpack.Category
 import com.example.mz_focusnews.core.theme.myiconpack.Home
 import com.example.mz_focusnews.core.theme.myiconpack.Quiz
@@ -17,6 +20,6 @@ public val MyIconPack.AllIcons: ____KtList<ImageVector>
         if (__AllIcons != null) {
             return __AllIcons!!
         }
-        __AllIcons = listOf(Bell, Category, Home, Quiz, User)
+        __AllIcons = listOf(Bell, Category, Home, Quiz, User, Bookmark, NonBookmark, Back)
         return __AllIcons!!
     }
