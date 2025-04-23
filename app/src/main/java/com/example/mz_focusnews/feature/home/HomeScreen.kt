@@ -1,5 +1,6 @@
 package com.example.mz_focusnews.feature.home
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,16 +11,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_200
 
 @Composable
-fun HomeScreen(navController: NavController, onDrawerOpen: () -> Unit) {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    navController: NavController,
+    onDrawerOpen: () -> Unit
+) {
+    val newsState = viewModel.newsState.collectAsState().value  // StateFlow 관찰
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -35,10 +44,14 @@ fun HomeScreen(navController: NavController, onDrawerOpen: () -> Unit) {
             // Breaking Drawer Open Button
             UserGuideSection(onDrawerOpen)
 
-            BreakingSection({ navigateToContent(navController) })
+            BreakingSection({
+//                navigateToContent(navController)
+            })
 
-            NewsSection({ navigateToContent(navController) })
+            NewsSection(newsState) { newsId ->
+                navigateToContent(newsId, navController)
 
+            }
             Spacer(
                 modifier = Modifier
                     .height(2.dp)
@@ -46,17 +59,20 @@ fun HomeScreen(navController: NavController, onDrawerOpen: () -> Unit) {
                     .background(Gray_200)
             )
 
-            RecommendedNewsSection({ navigateToContent(navController) })
+            RecommendedNewsSection({
+//                navigateToContent(navController)
+            })
         }
     }
 }
 
-fun navigateToContent(navController: NavController) {
-    navController.navigate("content")
+private fun navigateToContent(newsId: Long, navController: NavController) {
+    navController.navigate("content/$newsId")
+    Log.d("Retrofit", "clicked news id = $newsId")
 }
 
 @Preview
 @Composable
 fun HomePreview() {
-    HomeScreen(rememberNavController(), {})
+    HomeScreen(viewModel(), rememberNavController(), {})
 }
