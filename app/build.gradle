@@ -130,6 +130,14 @@ android {
         implementation("androidx.compose.ui:ui-graphics")
         implementation("androidx.compose.ui:ui-tooling-preview")
         implementation("androidx.compose.material3:material3")
+
+        // image url
+        implementation(libs.coil.compose)
+
+        // custom tab
+        implementation("androidx.browser:browser:1.8.0")
+
+
     }
 }
 

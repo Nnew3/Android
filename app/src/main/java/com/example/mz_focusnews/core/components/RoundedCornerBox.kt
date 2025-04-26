@@ -17,13 +17,16 @@ fun RoundedCornerBox(
     radius: Dp,
     paddingHorizontal: Dp = 18.dp,
     paddingVertical: Dp = 18.dp,
-    bgColor: Color, content: @Composable () -> Unit
+    bgColor: Color,
+    onClick: () -> Unit = { },
+    content: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(radius))
             .background(bgColor)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
+            .clickable { onClick() }
     ) {
         content()
     }

@@ -26,36 +26,47 @@ import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun BreakingSection(navigateToContent: () -> Unit) {
+fun BreakingSection(breakingState: BreakingState, navigateToContent: (id: Long) -> Unit) {
+    if (breakingState.breakingNews == null) {
+        return
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 2.dp)
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth().background(Bg_Blue)
-        ) {
-            Row(
+        breakingState.breakingNews.breakingNewsRecent.let { news ->
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(12.dp))
-                    .padding(horizontal = 14.dp, vertical = 13.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .background(Bg_Blue)
             ) {
-                Image(
-                    painter = painterResource(R.drawable.icon_breaking),
-                    contentDescription = "breaking news icon",
-                    modifier = Modifier.size(25.dp)
-                )
-                Text(
-                    modifier = Modifier.padding(start = 12.dp).clickable { navigateToContent() },
-                    text = "산림청 \"경북 영덕 산불 주불 진화\" 평균 진화율 94% 넘어",
-                    style = TextStyle(
-                        fontFamily = preFontFamily,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.5.sp
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .padding(horizontal = 14.dp, vertical = 13.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.icon_breaking),
+                        contentDescription = "breaking news icon",
+                        modifier = Modifier.size(25.dp)
                     )
-                )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 12.dp)
+                            .clickable { navigateToContent(news.id) },
+                        text = news.title,
+                        style = TextStyle(
+                            fontFamily = preFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 12.5.sp
+                        )
+                    )
+                }
             }
         }
     }
@@ -64,5 +75,5 @@ fun BreakingSection(navigateToContent: () -> Unit) {
 @Preview
 @Composable
 fun BreakingPreview() {
-    BreakingSection({ })
+    BreakingSection(BreakingState(), { })
 }
