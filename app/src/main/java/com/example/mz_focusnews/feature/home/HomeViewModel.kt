@@ -29,12 +29,12 @@ class HomeViewModel : ViewModel() {
         _newsState.value = NewsState(isLoading = true)  // 로딩 시작
         viewModelScope.launch {
             try {
-                val response = service.getMainNewsData()
+                val response = service.getMainNews()
                 _newsState.value = NewsState(newsGroup = response.data, isLoading = false)
-                Log.d("Retrofit", _newsState.toString())
+                Log.d("Retrofit", "fetchMainNews called:: ${_newsState.value}")
             } catch (e: Exception) {
-                _newsState.value = NewsState(isLoading = false)
-                Log.e("Retrofit", "Error")
+                _newsState.value = NewsState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Retrofit", "Main News Error: ${_newsState.value.errorMsg}")
             }
         }
     }
@@ -44,12 +44,11 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = service.getBreakingNews()
-                _breakingState.value =
-                    BreakingState(breakingNews = response.data, isLoading = false)
-                Log.d("Retrofit", _breakingState.toString())
+                _breakingState.value = BreakingState(breakingNews = response.data, isLoading = false, isError = false)
+                Log.d("Retrofit", "fetchBreakingNews called:: ${_breakingState.value}")
             } catch (e: Exception) {
-                _breakingState.value = BreakingState(isLoading = false)
-                Log.e("Retrofit", "Error")
+                _breakingState.value = BreakingState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Retrofit", "Breaking News Error: ${_newsState.value.errorMsg}")
             }
         }
 
@@ -58,10 +57,14 @@ class HomeViewModel : ViewModel() {
 
 data class NewsState(
     val newsGroup: NewsGroup? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
 )
 
 data class BreakingState(
     val breakingNews: BreakingNews? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
 )

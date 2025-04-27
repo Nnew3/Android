@@ -44,16 +44,14 @@ fun MainScreen() {
         drawerBackgroundColor = Color.White,
         drawerContent = {
             ModalDrawerSheet {
-                if (breakingList != null) {
-                    DrawerScreen(
-                        onDrawerClosed = {
-                            coroutineScope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        breakingNews = breakingList,
-                        navigateToContent = { newsId -> navController.navigate("content/$newsId") })
-                }
+                DrawerScreen(
+                    onDrawerClosed = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    breakingNews = breakingList,
+                    navigateToContent = { newsId -> navController.navigate("content/$newsId") })
             }
         },
         gesturesEnabled = drawerState.isOpen
