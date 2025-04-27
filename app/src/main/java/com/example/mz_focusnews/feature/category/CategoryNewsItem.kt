@@ -1,6 +1,5 @@
 package com.example.mz_focusnews.feature.category
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,13 +26,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.api.model.NewsRes
 import com.example.mz_focusnews.core.theme.Gray_500
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun CategoryNewsItem(navController: NavController, news: String) {
+fun CategoryNewsItem(news: NewsRes, navigateToContent: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,17 +42,18 @@ fun CategoryNewsItem(navController: NavController, news: String) {
             .background(Color.White)
             .padding(16.dp)
             .clickable {
-                navController.navigate("content")
+                navigateToContent()
             },
     ) {
         Row(
             modifier = Modifier.fillMaxHeight(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.example2),
-                contentDescription = "exmaple image",
+            AsyncImage(
+                model = news.imgUrl,
+                contentDescription = "News Image",
                 modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp))
                     .width(130.dp)
                     .background(Color.White),
                 contentScale = ContentScale.Crop
@@ -62,7 +63,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                 modifier = Modifier.padding(start = 12.dp)
             ) {
                 Text(
-                    text = news,
+                    text = news.title,
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -82,7 +83,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                     )
 
                     Text(
-                        text = "한국 경제",
+                        text = news.publisher,
                         textAlign = TextAlign.Center,
                         style = TextStyle(
                             fontFamily = preFontFamily,
@@ -105,7 +106,7 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                     )
 
                     Text(
-                        text = "6시간 30분 전",
+                        text = news.newsTime,
                         style = TextStyle(
                             fontFamily = preFontFamily,
                             fontWeight = FontWeight.Medium,
@@ -116,7 +117,6 @@ fun CategoryNewsItem(navController: NavController, news: String) {
                     )
                 }
             }
-
         }
     }
 }
