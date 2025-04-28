@@ -74,7 +74,7 @@ fun NewsSection(newsState: NewsState, navigateToContent: (id: Long) -> Unit) {
                     newsState.isError -> {
                         StatusCard(
                             bgColor = Today_Blue,
-                            imgRes = R.drawable.img_error_kitty,
+                            imgRes = R.drawable.img_network_kitty,
                             msg = "네트워크 오류가 발생했어요"
                         )
                     }

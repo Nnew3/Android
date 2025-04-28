@@ -95,7 +95,7 @@ fun CategoryScreen(
 
                     categoryState.isError -> {
                         StatusCard(
-                            imgRes = R.drawable.img_error_kitty,
+                            imgRes = R.drawable.img_network_kitty,
                             msg = "네트워크 오류가 발생했어요"
                         )
                     }
