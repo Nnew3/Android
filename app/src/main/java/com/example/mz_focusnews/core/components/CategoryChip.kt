@@ -32,7 +32,6 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 enum class CategoryType(val label: String, val value: String) { // label: UI 표시, value: API 호출용
     POLITICS("정치", "politics"),
     ECONOMY("경제", "economic"),
-    SOCIETY("사회", "society"),
     REGION("지역", "region"),
     LIFE_CULTURE("생활/문화", "culture"),
     IT_SCIENCE("IT/과학", "science"),
