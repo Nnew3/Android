@@ -13,33 +13,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.Category_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
 
-enum class CategoryType(val label: String) {
-    POLITICS("정치"),
-    ECONOMY("경제"),
-    SOCIETY("사회"),
-    REGION("지역"),
-    LIFE_CULTURE("생활/문화"),
-    IT_SCIENCE("IT/과학"),
-    ENTERTAINMENT("연예"),
-    SPORTS("스포츠"),
-    KEYWORD("키워드")
+/**
+ * category = politics → 정치
+ * category = economic → 경제
+ * category = region → 지역
+ * category = culture → 생활/문화
+ * category = science → IT/과학
+ * category = entertainment → 연예
+ * category = sports → 스포츠
+ * category = keyword → 키워드
+ */
+enum class CategoryType(val label: String, val value: String) { // label: UI 표시, value: API 호출용
+    POLITICS("정치", "politics"),
+    ECONOMY("경제", "economic"),
+    SOCIETY("사회", "society"),
+    REGION("지역", "region"),
+    LIFE_CULTURE("생활/문화", "culture"),
+    IT_SCIENCE("IT/과학", "science"),
+    ENTERTAINMENT("연예", "entertainment"),
+    SPORTS("스포츠", "sports"),
+    KEYWORD("키워드", "keyword")
 }
 
 
 @Composable
 fun CategoryChip(
-    category: String, isSelected: Boolean,
+    category: String,
+    isSelected: Boolean,
     onClick: () -> Unit
 ) {
-
-    // 인기순 필터칩
     FilterChip(
         modifier = Modifier.padding(vertical = 4.dp),
         selected = isSelected,
@@ -67,13 +75,4 @@ fun CategoryChip(
             selectedBorderColor = Category_Blue,
         )
     )
-}
-
-
-@Preview
-@Composable
-fun CategoryChipPreview() {
-    val categories = listOf("정치", "경제", "사회", "지역", "생활/문화", "IT/과학", "연예", "스포츠", "키워드")
-
-
 }

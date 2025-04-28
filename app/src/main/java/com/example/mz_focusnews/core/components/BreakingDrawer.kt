@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.api.model.BreakingItem
 import com.example.mz_focusnews.core.theme.Blue_300
 import com.example.mz_focusnews.core.theme.preFontFamily
@@ -23,13 +24,9 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 @Composable
 fun DrawerScreen(
     onDrawerClosed: () -> Unit,
-    breakingNews: List<BreakingItem>,
+    breakingNews: List<BreakingItem>?,
     navigateToContent: (id: Long) -> Unit
 ) {
-    if (breakingNews.isEmpty()) {
-        return
-    }
-
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -51,30 +48,34 @@ fun DrawerScreen(
                     fontSize = 20.sp
                 )
             )
-            breakingNews.let { news ->
-                Column(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .padding(top = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    news.forEach { item ->
-                        RoundedCornerBox(
-                            radius = 12.dp,
-                            bgColor = Blue_300,
-                            onClick = {
-                                navigateToContent(item.id)
-                                onDrawerClosed()
-                            }) {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = item.title,
-                                style = TextStyle(
-                                    fontFamily = preFontFamily,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 15.sp
-                                ),
-                            )
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(top = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                breakingNews?.let {
+                    if (breakingNews.isEmpty()) {
+                        StatusCard(imgRes = R.drawable.img_error_kitty, msg = "아직 속보가 없어요!")
+                    } else {
+                        breakingNews.forEach { item ->
+                            RoundedCornerBox(
+                                radius = 12.dp,
+                                bgColor = Blue_300,
+                                onClick = {
+                                    navigateToContent(item.id)
+                                    onDrawerClosed()
+                                }) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = item.title,
+                                    style = TextStyle(
+                                        fontFamily = preFontFamily,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 15.sp
+                                    ),
+                                )
+                            }
                         }
                     }
                 }

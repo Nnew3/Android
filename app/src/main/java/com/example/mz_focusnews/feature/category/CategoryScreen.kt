@@ -1,5 +1,6 @@
 package com.example.mz_focusnews.feature.category
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,32 +16,30 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.CategoryChip
 import com.example.mz_focusnews.core.components.CategoryType
 import com.example.mz_focusnews.core.components.SortChip
 import com.example.mz_focusnews.core.components.SortType
+import com.example.mz_focusnews.core.components.StatusCard
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Category_Blue
 
 @Composable
-fun CategoryScreen(navController: NavController) {
-    var selectedSort by remember { mutableStateOf(SortType.BASIC) } // 선택된 정렬 상태 (Default: 최신순)
-
-    val categories = CategoryType.entries
-    var selectedCategory by remember { mutableStateOf(categories[0]) } // 선택된 카테고리
-
-    val newsList = remember(selectedCategory) { getNewsByCategory(selectedCategory) } // 테스트용
+fun CategoryScreen(
+    viewModel: CategoryViewModel,
+    navController: NavController
+) {
+    val categoryState = viewModel.categoryState.collectAsState().value
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -60,61 +59,75 @@ fun CategoryScreen(navController: NavController) {
             ) {
                 item { Spacer(modifier = Modifier.width(12.dp)) }
 
-                items(categories) { category ->
+                items(CategoryType.entries) { category ->
                     CategoryChip(
                         category = category.label,
-                        isSelected = (category == selectedCategory), // 현재 선택된 카테고리인지 체크
-                        onClick = { selectedCategory = category } // 클릭하면 선택된 카테고리 변경)
+                        isSelected = (category == categoryState.selectedCategory), // 현재 선택된 카테고리인지 체크
+                        onClick = { viewModel.onCategorySelected(category) } // 클릭하면 선택된 카테고리 변경)
                     )
                 }
             }
 
-            // 정렬
-            // TODO: 정렬 로직 구현하기
+            // 정렬 기준 선택
             Row(
                 modifier = Modifier
                     .align(Alignment.End)
                     .padding(top = 8.dp, end = 25.dp),
                 horizontalArrangement = Arrangement.spacedBy(15.dp)
             ) {
-                SortChip(
-                    sortType = SortType.BASIC,
-                    isSelected = (selectedSort == SortType.BASIC),
-                    onClick = { selectedSort = SortType.BASIC }
-                )
-                SortChip(
-                    sortType = SortType.RECENT,
-                    isSelected = (selectedSort == SortType.RECENT),
-                    onClick = { selectedSort = SortType.RECENT }
-                )
-                SortChip(
-                    sortType = SortType.POPULAR,
-                    isSelected = (selectedSort == SortType.POPULAR),
-                    onClick = { selectedSort = SortType.POPULAR }
-                )
+                for (sortType in SortType.entries) {
+                    SortChip(
+                        sortType = sortType,
+                        isSelected = (sortType == categoryState.selectedSortType),
+                        onClick = { viewModel.onSortTypeSelected(sortType) }
+                    )
+                }
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 25.dp, top = 8.dp, end = 25.dp, bottom = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(newsList) { news ->
-                    CategoryNewsItem(navController, news)
+            categoryState.news?.let { news ->
+                when {
+                    categoryState.isLoading -> {
+                        StatusCard(
+                            imgRes = R.drawable.img_loading_kitty,
+                            msg = "뉴스를 가져오는 중이에요"
+                        )
+                    }
+
+                    categoryState.isError -> {
+                        StatusCard(
+                            imgRes = R.drawable.img_network_kitty,
+                            msg = "네트워크 오류가 발생했어요"
+                        )
+                    }
+
+                    // newsResList가 없을 떄 null이 아닌 빈 배열로 옴
+                    news.newsResList.isEmpty() -> {
+                        StatusCard(
+                            imgRes = R.drawable.img_error_kitty, msg = "해당 카테고리의 뉴스가 없어요"
+                        )
+                    }
+
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 25.dp, top = 8.dp, end = 25.dp, bottom = 10.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(news.newsResList) { item ->
+                                CategoryNewsItem(
+                                    news = item,
+                                    navigateToContent = {
+                                        Log.d("Retrofit", "clicked news id = ${item.id}")
+                                        navController.navigate("content/${item.id}")
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-// 테스트용 임시 함수
-fun getNewsByCategory(category: CategoryType): List<String> {
-    return when (category) {
-        CategoryType.POLITICS -> List(10) { "정치 뉴스 제목: $it" }
-        CategoryType.ECONOMY -> List(10) { "경제 뉴스 제목: $it" }
-
-        else -> emptyList()
     }
 }
 
@@ -122,5 +135,5 @@ fun getNewsByCategory(category: CategoryType): List<String> {
 @Preview
 @Composable
 fun CategoryPreview() {
-    CategoryScreen(navController = rememberNavController())
+    CategoryScreen(viewModel(), navController = rememberNavController())
 }

@@ -11,16 +11,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.core.theme.Blue_400
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.preFontFamily
 
-enum class SortType(val label: String) {
-    BASIC("기본순"), // 크롤링순
-    POPULAR("인기순"),
-    RECENT("최신순")
+/**
+ * sort = popular → 인기순
+ * sort = basic → 기본순(크롤링순)
+ * sort = recent → 최신순(뉴스 기사 작성 최신순)
+ */
+enum class SortType(val label: String, val value: String) {
+    BASIC("기본순", "basic"),
+    POPULAR("인기순", "popular"),
+    RECENT("최신순", "recent")
 }
 
 @Composable
@@ -55,10 +59,4 @@ fun SortChip(
             selectedBorderColor = Blue_400,
         )
     )
-}
-
-@Preview
-@Composable
-fun ChipPreview() {
-
 }

@@ -27,8 +27,14 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
 fun BreakingSection(breakingState: BreakingState, navigateToContent: (id: Long) -> Unit) {
-    if (breakingState.breakingNews == null) {
-        return
+
+    val news = breakingState.breakingNews?.breakingNewsRecent
+
+    val (breakingText, newsId) = when {
+        breakingState.isError -> "잠시 후 다시 시도해 주세요" to 0L
+        breakingState.isLoading -> "속보를 불러오고 있어요" to 0L
+        news == null -> "오늘 올라온 속보가 없어요!" to 0L
+        else -> news.title to news.id
     }
 
     Surface(
@@ -36,37 +42,39 @@ fun BreakingSection(breakingState: BreakingState, navigateToContent: (id: Long) 
             .fillMaxWidth()
             .padding(top = 2.dp)
     ) {
-        breakingState.breakingNews.breakingNewsRecent.let { news ->
-
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Bg_Blue)
+        ) {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Bg_Blue)
+                    .background(Color.White, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 14.dp, vertical = 13.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                Image(
+                    painter = painterResource(R.drawable.icon_breaking),
+                    contentDescription = "breaking news icon",
+                    modifier = Modifier.size(25.dp)
+                )
+
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, RoundedCornerShape(12.dp))
-                        .padding(horizontal = 14.dp, vertical = 13.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.icon_breaking),
-                        contentDescription = "breaking news icon",
-                        modifier = Modifier.size(25.dp)
+                        .padding(start = 12.dp)
+                        .clickable {
+                            if (newsId != 0L) {
+                                navigateToContent(newsId)
+                            }
+                        },
+                    text = breakingText,
+                    style = TextStyle(
+                        fontFamily = preFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 12.5.sp
                     )
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 12.dp)
-                            .clickable { navigateToContent(news.id) },
-                        text = news.title,
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 12.5.sp
-                        )
-                    )
-                }
+                )
             }
         }
     }
