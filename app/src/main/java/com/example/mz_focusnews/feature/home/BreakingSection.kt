@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.stringSplit
 
 @Composable
 fun BreakingSection(breakingState: BreakingState, navigateToContent: (id: Long) -> Unit) {
@@ -34,7 +35,7 @@ fun BreakingSection(breakingState: BreakingState, navigateToContent: (id: Long) 
         breakingState.isError -> "잠시 후 다시 시도해 주세요" to 0L
         breakingState.isLoading -> "속보를 불러오고 있어요" to 0L
         news == null -> "오늘 올라온 속보가 없어요!" to 0L
-        else -> news.title to news.id
+        else -> stringSplit(max = 35, news.title) to news.id
     }
 
     Surface(

@@ -29,6 +29,7 @@ import com.example.mz_focusnews.core.api.model.News
 import com.example.mz_focusnews.core.theme.Gray_600
 import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.stringSplit
 
 @Composable
 fun NewsItemCard(
@@ -93,7 +94,7 @@ fun NewsItemCard(
 
                     // 뉴스 내용
                     Text(
-                        text = contentSplit(news.content),
+                        text = stringSplit(max = 25, news.content),
                         style = TextStyle(
                             fontFamily = preFontFamily,
                             fontWeight = FontWeight.SemiBold,
@@ -119,19 +120,5 @@ fun NewsItemCard(
                 }
             }
         }
-    }
-}
-
-// 뉴스 content 스트링 자르는 함수
-private fun contentSplit(content: String): String {
-    val max = 25
-    if (content.length <= max) return content
-
-    val index = content.indexOf(' ', startIndex = max)
-
-    return if (index != -1) {
-        content.substring(0, index) + "..."
-    } else {
-        content.substring(0, max) + "..."
     }
 }
