@@ -1,6 +1,8 @@
 package com.example.mz_focusnews.feature.home
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_200
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -30,6 +33,7 @@ fun HomeScreen(
     val newsState = viewModel.newsState.collectAsState().value  // StateFlow 관찰
     val breakingState = viewModel.breakingState.collectAsState().value
     val userNewsState = viewModel.userNewsState.collectAsState().value
+    val mainInfoState = viewModel.mainInfoState.collectAsState().value
 
     Surface(
         modifier = Modifier
@@ -44,7 +48,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Breaking Drawer Open Button
-            UserGuideSection(onDrawerOpen)
+            UserGuideSection(mainInfoState, onDrawerOpen)
 
             BreakingSection(breakingState) { newsId ->
                 navigateToContent(newsId, navController)
@@ -53,6 +57,7 @@ fun HomeScreen(
             NewsSection(newsState) { newsId ->
                 navigateToContent(newsId, navController)
             }
+
             Spacer(
                 modifier = Modifier
                     .height(2.dp)
