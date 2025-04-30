@@ -23,5 +23,8 @@ interface ApiService {
         @Query("category") category: String,
         @Query("sort") sort: String
     ): ApiResponse<NewsResponse>
+
+    @GET("user/v1/main/userNews")
+    suspend fun getUserNews(): ApiResponse<NewsResponse>
 }
 
