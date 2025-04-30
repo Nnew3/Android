@@ -37,11 +37,7 @@ class CategoryViewModel : ViewModel() {
 
     fun fetchNewsByCategory() {
         _categoryState.update { it.copy(isLoading = true) }
-        // 로딩 시작
-        Log.d(
-            "Retrofit",
-            "fetch news category = (${_categoryState.value.selectedCategory.value}, ${_categoryState.value.selectedSortType.value})"
-        )
+
         viewModelScope.launch {
             try {
                 val response = service.getNewsByCategory(
@@ -60,10 +56,10 @@ class CategoryViewModel : ViewModel() {
 }
 
 data class CategoryState(
-    val isLoading: Boolean = false,
     val selectedCategory: CategoryType = CategoryType.POLITICS, // default: politics
     val selectedSortType: SortType = SortType.BASIC, // default: basic
     val news: NewsResponse? = null,
+    val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMsg: String? = null
 )
