@@ -2,6 +2,7 @@ package com.example.mz_focusnews.core.api.service
 
 import com.example.mz_focusnews.core.api.ApiResponse
 import com.example.mz_focusnews.core.api.model.BreakingNews
+import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
@@ -30,5 +31,8 @@ interface ApiService {
 
     @GET("user/v1/relatedNews")
     suspend fun getRelatedNews(@Query("newsId") newsId: Long): ApiResponse<RelatedNewsList>
+
+  @GET("/user/v1/main/info")
+    suspend fun getMainInfo(): ApiResponse<MainInfo>
 }
 
