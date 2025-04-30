@@ -1,6 +1,8 @@
 package com.example.mz_focusnews.feature.home
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_200
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
@@ -72,6 +75,7 @@ private fun navigateToContent(newsId: Long, navController: NavController) {
     Log.d("Retrofit", "clicked news id = $newsId")
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HomePreview() {
