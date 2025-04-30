@@ -51,6 +51,7 @@ import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.myiconpack.Bookmark
 import com.example.mz_focusnews.core.theme.myiconpack.NonBookmark
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.summaryToThree
 
 @Composable
 fun ContentScreen(
@@ -175,9 +176,7 @@ fun ContentScreen(
 
                                 // 3줄 요약
                                 // summary는 총 세 문장으로만 이루어져있다 (온점도 단 세개만 존재)
-                                val sentences =
-                                    contentState.newsDetail.summary.split(".").map { it.trim() }
-                                        .filter { it.isNotEmpty() }
+                                val sentences = summaryToThree(contentState.newsDetail.summary)
                                 Column(
                                     verticalArrangement = Arrangement.spacedBy(15.dp)
                                 ) {
