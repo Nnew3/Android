@@ -3,7 +3,7 @@ package com.example.mz_focusnews.feature.category
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mz_focusnews.core.api.model.NewsByCategory
+import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
 import com.example.mz_focusnews.core.components.CategoryType
@@ -63,7 +63,7 @@ data class CategoryState(
     val isLoading: Boolean = false,
     val selectedCategory: CategoryType = CategoryType.POLITICS, // default: politics
     val selectedSortType: SortType = SortType.BASIC, // default: basic
-    val news: NewsByCategory? = null,
+    val news: NewsResponse? = null,
     val isError: Boolean = false,
     val errorMsg: String? = null
 )

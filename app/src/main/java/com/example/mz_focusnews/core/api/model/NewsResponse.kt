@@ -1,6 +1,6 @@
 package com.example.mz_focusnews.core.api.model
 
-data class NewsByCategory(
+data class NewsResponse(
     val newsResList: List<NewsRes>
 )
 

@@ -2,7 +2,7 @@ package com.example.mz_focusnews.core.api.service
 
 import com.example.mz_focusnews.core.api.ApiResponse
 import com.example.mz_focusnews.core.api.model.BreakingNews
-import com.example.mz_focusnews.core.api.model.NewsByCategory
+import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import retrofit2.http.GET
@@ -22,6 +22,6 @@ interface ApiService {
     suspend fun getNewsByCategory(
         @Query("category") category: String,
         @Query("sort") sort: String
-    ): ApiResponse<NewsByCategory>
+    ): ApiResponse<NewsResponse>
 }
 
