@@ -31,6 +31,7 @@ import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.api.model.NewsRes
 import com.example.mz_focusnews.core.theme.Gray_500
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.stringSplit
 
 @Composable
 fun CategoryNewsItem(news: NewsRes, navigateToContent: () -> Unit) {
@@ -63,7 +64,7 @@ fun CategoryNewsItem(news: NewsRes, navigateToContent: () -> Unit) {
                 modifier = Modifier.padding(start = 12.dp)
             ) {
                 Text(
-                    text = news.title,
+                    text = stringSplit(max = 35, news.title) ,
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Bold,

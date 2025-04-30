@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mz_focusnews.core.api.model.BreakingNews
 import com.example.mz_focusnews.core.api.model.NewsGroup
+import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +21,13 @@ class HomeViewModel : ViewModel() {
     private val _breakingState = MutableStateFlow(BreakingState())
     val breakingState: StateFlow<BreakingState> = _breakingState
 
+    private val _userNewsState = MutableStateFlow(UserNewsState())
+    val userNewsState: StateFlow<UserNewsState> = _userNewsState
+
     init {
         fetchMainNews()
         fetchBreakingNews()
+        fetchUserNews()
     }
 
     fun fetchMainNews() {
@@ -33,7 +38,8 @@ class HomeViewModel : ViewModel() {
                 _newsState.value = NewsState(newsGroup = response.data, isLoading = false)
                 Log.d("Retrofit", "fetchMainNews called:: ${_newsState.value}")
             } catch (e: Exception) {
-                _newsState.value = NewsState(isLoading = false, isError = true, errorMsg = e.message)
+                _newsState.value =
+                    NewsState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "Main News Error: ${_newsState.value.errorMsg}")
             }
         }
@@ -44,14 +50,31 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = service.getBreakingNews()
-                _breakingState.value = BreakingState(breakingNews = response.data, isLoading = false, isError = false)
+                _breakingState.value =
+                    BreakingState(breakingNews = response.data, isLoading = false, isError = false)
                 Log.d("Retrofit", "fetchBreakingNews called:: ${_breakingState.value}")
             } catch (e: Exception) {
-                _breakingState.value = BreakingState(isLoading = false, isError = true, errorMsg = e.message)
+                _breakingState.value =
+                    BreakingState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "Breaking News Error: ${_newsState.value.errorMsg}")
             }
         }
+    }
 
+    fun fetchUserNews(){
+        _userNewsState.value = UserNewsState(isLoading = true)
+        viewModelScope.launch {
+            try {
+                val response = service.getUserNews()
+                _userNewsState.value =
+                    UserNewsState(news = response.data, isLoading = false, isError = false)
+                Log.d("Retrofit", "fetchRecommendNews called:: ${_userNewsState.value}")
+
+            } catch (e: Exception) {
+                _userNewsState.value = UserNewsState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Retrofit", "Recommend News Error: ${_userNewsState.value.errorMsg}")
+            }
+        }
     }
 }
 
@@ -64,6 +87,13 @@ data class NewsState(
 
 data class BreakingState(
     val breakingNews: BreakingNews? = null,
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
+)
+
+data class UserNewsState(
+    val news: NewsResponse? = null,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMsg: String? = null
