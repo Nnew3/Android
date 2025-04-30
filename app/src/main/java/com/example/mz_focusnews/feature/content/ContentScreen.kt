@@ -39,15 +39,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.BackBtn
 import com.example.mz_focusnews.core.components.BookmarkBtn
 import com.example.mz_focusnews.core.components.RoundedCornerBox
+import com.example.mz_focusnews.core.components.StatusCard
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.MyIconPack
+import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.myiconpack.Bookmark
 import com.example.mz_focusnews.core.theme.myiconpack.NonBookmark
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.summaryToThree
 
 @Composable
 fun ContentScreen(
@@ -55,7 +59,8 @@ fun ContentScreen(
     newsId: String,
     navController: NavController
 ) {
-    val contentState = viewModel.contentState.collectAsState().value  // StateFlow 관찰
+    val contentState = viewModel.contentState.collectAsState().value
+    val relatedState = viewModel.relatedState.collectAsState().value
 
     var isBookmarked by remember { mutableStateOf(false) } // 북마크 여부
     val iconRes = if (isBookmarked) MyIconPack.Bookmark else MyIconPack.NonBookmark
@@ -65,6 +70,7 @@ fun ContentScreen(
     LaunchedEffect(newsId) {
         val id = newsId.toLongOrNull() ?: 0L
         viewModel.fetchNewsDetail(id) // id가 변경될 때마다 새로운 데이터를 가져오도록 호출
+        viewModel.fetchRelatedNews(id)
     }
 
     Surface(
@@ -105,73 +111,130 @@ fun ContentScreen(
                 )
             }
 
-            contentState.news?.let { detail ->
-                LazyColumn {
-                    item {
+            /**
+             * News Detail
+             */
+            LazyColumn {
+                item {
+                    when {
+                        // 로딩중
+                        contentState.isLoading -> {
+                            StatusCard(
+                                imgRes = R.drawable.img_loading_kitty,
+                                msg = "뉴스를 가져오는 중이에요!"
+                            )
+                        }
 
-                        // 뉴스 썸네일
-                        AsyncImage(
-                            model = detail.imgUrl,
-                            contentDescription = "News Image",
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .height(210.dp)
-                                .clickable {
-                                    openWebPage(context, detail.link)
-                                },
-                            contentScale = ContentScale.Crop
-                        )
+                        // 에러 처리
+                        contentState.isError -> {
+                            StatusCard(
+                                bgColor = Today_Blue,
+                                imgRes = R.drawable.img_network_kitty,
+                                msg = "네트워크 오류가 발생했어요"
+                            )
+                        }
 
-                        // 뉴스 내용
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 15.dp),
-                            verticalArrangement = Arrangement.spacedBy(15.dp)
-                        ) {
+                        (contentState.newsDetail == null) -> {
+                            StatusCard(
+                                bgColor = Today_Blue,
+                                imgRes = R.drawable.image_error_kitty,
+                                msg = "해당 뉴스의 정보가 없습니다"
+                            )
+                        }
 
-                            // 뉴스 제목
-                            Text(
-                                text = detail.title,
-                                style = TextStyle(
-                                    fontFamily = preFontFamily,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp
-                                )
+                        else -> {
+                            // 뉴스 썸네일
+                            AsyncImage(
+                                model = contentState.newsDetail.imgUrl,
+                                contentDescription = "News Image",
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .height(210.dp)
+                                    .clickable {
+                                        openWebPage(context, contentState.newsDetail.link)
+                                    },
+                                contentScale = ContentScale.Crop
                             )
 
-                            // 3줄 요약
-                            // summary는 총 세 문장으로만 이루어져있다 (온점도 단 세개만 존재)
-                            val sentences = detail.summary.split(".").map { it.trim() }
-                                .filter { it.isNotEmpty() }
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(15.dp)
-                            ) {
-                                sentences.forEach { sentence ->
-                                    RoundedCornerBox(
-                                        radius = 18.dp,
-                                        bgColor = Blue_900
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            text = sentence,
-                                            style = TextStyle(
-                                                fontFamily = preFontFamily,
-                                                fontWeight = FontWeight.SemiBold,
-                                                fontSize = 14.sp
-                                            ),
-                                            color = Color.White
-                                        )
-                                    }
-                                }
-                            }
-
+                            // 뉴스 내용
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 25.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                                    .padding(top = 15.dp),
+                                verticalArrangement = Arrangement.spacedBy(15.dp)
                             ) {
+
+                                // 뉴스 제목
+                                Text(
+                                    text = contentState.newsDetail.title,
+                                    style = TextStyle(
+                                        fontFamily = preFontFamily,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 20.sp
+                                    )
+                                )
+
+                                // 3줄 요약
+                                // summary는 총 세 문장으로만 이루어져있다 (온점도 단 세개만 존재)
+                                val sentences = summaryToThree(contentState.newsDetail.summary)
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                                ) {
+                                    sentences.forEach { sentence ->
+                                        RoundedCornerBox(
+                                            radius = 18.dp,
+                                            bgColor = Blue_900
+                                        ) {
+                                            Text(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                text = sentence,
+                                                style = TextStyle(
+                                                    fontFamily = preFontFamily,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    fontSize = 14.sp
+                                                ),
+                                                color = Color.White
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 25.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        when {
+                            // 로딩중
+                            relatedState.isLoading -> {
+                                StatusCard(
+                                    imgRes = R.drawable.img_loading_kitty,
+                                    msg = "뉴스를 가져오는 중이에요!"
+                                )
+                            }
+
+                            // 에러 처리
+                            relatedState.isError -> {
+                                StatusCard(
+                                    imgRes = R.drawable.img_network_kitty,
+                                    msg = "네트워크 오류가 발생했어요"
+                                )
+                            }
+
+                            (relatedState.relatedNewsList == null ||
+                                    relatedState.relatedNewsList.relatedNewsResList.isEmpty()) -> {
+                                StatusCard(
+                                    imgRes = R.drawable.image_error_kitty,
+                                    msg = "관련 뉴스가 없습니다"
+                                )
+                            }
+
+                            // 정상 응답 처리
+                            else -> {
                                 Text(
                                     text = "의대교수 사직서에 대해 더 알고싶다면?",
                                     style = TextStyle(
@@ -184,32 +247,25 @@ fun ContentScreen(
                                         .padding(start = 10.dp)
                                 )
 
-                                RoundedCornerBox(
-                                    radius = 18.dp, bgColor = Color.White
-                                ) {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = "정부와 의료계 대화가 둔화되면서 의대 교수들이 사직서를 제출하고 있다.",
-                                        style = TextStyle(
-                                            fontFamily = preFontFamily,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 14.sp
+                                relatedState.relatedNewsList.relatedNewsResList.forEach { news ->
+                                    RoundedCornerBox(
+                                        radius = 18.dp,
+                                        bgColor = Color.White
+                                    ) {
+                                        Text(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .clickable {
+                                                    navController.navigate("content/${news.id}")
+                                                },
+                                            text = news.title,
+                                            style = TextStyle(
+                                                fontFamily = preFontFamily,
+                                                fontWeight = FontWeight.SemiBold,
+                                                fontSize = 14.sp
+                                            )
                                         )
-                                    )
-                                }
-
-                                RoundedCornerBox(
-                                    radius = 18.dp, bgColor = Color.White
-                                ) {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = "정부와 의료계 대화가 둔화되면서 의대 교수들이 사직서를 제출하고 있다.",
-                                        style = TextStyle(
-                                            fontFamily = preFontFamily,
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 14.sp
-                                        )
-                                    )
+                                    }
                                 }
                             }
                         }

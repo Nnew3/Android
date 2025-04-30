@@ -77,6 +77,7 @@ private fun navigateToContent(newsId: Long, navController: NavController) {
     Log.d("Retrofit", "clicked news id = $newsId")
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun HomePreview() {

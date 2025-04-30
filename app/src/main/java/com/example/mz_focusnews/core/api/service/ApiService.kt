@@ -6,6 +6,7 @@ import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
+import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -28,7 +29,10 @@ interface ApiService {
     @GET("user/v1/main/userNews")
     suspend fun getUserNews(): ApiResponse<NewsResponse>
 
-    @GET("/user/v1/main/info")
+    @GET("user/v1/relatedNews")
+    suspend fun getRelatedNews(@Query("newsId") newsId: Long): ApiResponse<RelatedNewsList>
+
+  @GET("/user/v1/main/info")
     suspend fun getMainInfo(): ApiResponse<MainInfo>
 }
 
