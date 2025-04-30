@@ -26,6 +26,15 @@ fun summaryToThree(content: String): List<String> {
         .filter { it.isNotEmpty() }
 }
 
+fun keywordSplit(s: String): List<String> {
+    if (s == "") {
+        return emptyList()
+    } else {
+        return s.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+    }
+
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 fun calculateRelativeDate(dateString: String): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")

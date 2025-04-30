@@ -1,6 +1,5 @@
 package com.example.mz_focusnews.core.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,21 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mz_focusnews.R
+import coil.compose.AsyncImage
+import com.example.mz_focusnews.core.api.model.NewsPreview
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun NewsListItem(onClick: () -> Unit, newsTitle:String) {
+fun NewsListItem(onClick: () -> Unit, news: NewsPreview) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color.White)
-            .height(80.dp)
+            .height(90.dp)
             .padding(15.dp)
             .clickable {
                 onClick()
@@ -42,20 +41,21 @@ fun NewsListItem(onClick: () -> Unit, newsTitle:String) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            AsyncImage(
+                model = news.imgUrl,
+                contentDescription = "News Image",
                 modifier = Modifier
-                    .width(90.dp)
+                    .width(110.dp)
                     .padding(end = 15.dp),
-                painter = painterResource(R.drawable.example2),
-                contentDescription = null,
                 contentScale = ContentScale.Crop
             )
+
             Text(
-                text = newsTitle,
+                text = news.title,
                 style = TextStyle(
                     fontFamily = preFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 15.sp
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp
                 )
             )
         }

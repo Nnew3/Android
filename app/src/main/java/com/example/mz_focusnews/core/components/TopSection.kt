@@ -34,7 +34,7 @@ fun TopSection(title: String, navController: NavController) {
                 .fillMaxWidth()
                 .background(Color.Transparent),
             style = TextStyle(
-                fontFamily = preFontFamily, fontWeight = FontWeight.Bold, fontSize = 20.sp
+                fontFamily = preFontFamily, fontWeight = FontWeight.SemiBold, fontSize = 20.sp
             ),
             textAlign = TextAlign.Center
         )

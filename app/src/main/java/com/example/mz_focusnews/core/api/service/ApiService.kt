@@ -2,10 +2,12 @@ package com.example.mz_focusnews.core.api.service
 
 import com.example.mz_focusnews.core.api.ApiResponse
 import com.example.mz_focusnews.core.api.model.BreakingNews
+import com.example.mz_focusnews.core.api.model.NewsList
 import com.example.mz_focusnews.core.api.model.MainInfo
-import com.example.mz_focusnews.core.api.model.NewsResponse
+import com.example.mz_focusnews.core.api.model.MyPageInfo
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
+import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -32,7 +34,22 @@ interface ApiService {
     @GET("user/v1/relatedNews")
     suspend fun getRelatedNews(@Query("newsId") newsId: Long): ApiResponse<RelatedNewsList>
 
-  @GET("/user/v1/main/info")
+    @GET("/user/v1/main/info")
     suspend fun getMainInfo(): ApiResponse<MainInfo>
+
+    @GET("/user/v1/mypage/info")
+    suspend fun getMyPageInfo(): ApiResponse<MyPageInfo>
+
+    @GET("/user/v1/mypage")
+    suspend fun getLikeNewsList(
+        @Query("userId") userId: Long,
+        @Query("type") sort: String = "like"
+    ): ApiResponse<NewsList>
+
+    @GET("/user/v1/mypage")
+    suspend fun getRecentNewsList(
+        @Query("userId") userId: Long,
+        @Query("type") sort: String = "recent"
+    ): ApiResponse<NewsList>
 }
 

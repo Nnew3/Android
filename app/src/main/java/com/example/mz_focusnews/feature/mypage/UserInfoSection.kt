@@ -22,7 +22,10 @@ import com.example.mz_focusnews.core.theme.Blue_400
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun UserInfoSection(){
+fun UserInfoSection(myPageState: MyPageState) {
+    val nickName = myPageState.mypageInfo?.nickName ?: "알 수 없음"
+    val email = myPageState.mypageInfo?.email ?: "알 수 없음"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -30,16 +33,17 @@ fun UserInfoSection(){
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Image(
-            painter = painterResource(R.drawable.example),
+            painter = painterResource(R.drawable.img_person1),
             contentDescription = "user image",
             modifier = Modifier
                 .size(125.dp)
                 .clip(RoundedCornerShape(100.dp))
                 .background(Blue_400)
         )
+
         Text(
             modifier = Modifier.padding(top = 14.dp),
-            text = "래로미",
+            text = nickName,
             style = TextStyle(
                 fontFamily = preFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -48,7 +52,7 @@ fun UserInfoSection(){
         )
         Text(
             modifier = Modifier.padding(top = 4.dp),
-            text = "fofhal@gmail.com",
+            text = email,
             style = TextStyle(
                 fontFamily = preFontFamily,
                 fontWeight = FontWeight.Medium,

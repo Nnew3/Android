@@ -22,8 +22,6 @@ import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,12 +35,19 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.theme.Yellow
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.keywordSplit
 
 const val MAX = 3
 
 @Composable
-fun KeywordSetSection(keywordList: MutableList<String>, onAddBtnClick: () -> Unit) {
-    var btnCounter = 0 // 추가 버튼 개수
+fun KeywordSetSection(myPageState: MyPageState, onAddBtnClick: () -> Unit) {
+    val keywordList = myPageState.mypageInfo?.let { keywordSplit(it.keyword) }
+
+    val btnCounter = when (keywordList?.size) {
+        0, 2 -> 1
+        1 -> 2
+        else -> 0
+    }
 
     Box(
         modifier = Modifier
@@ -73,7 +78,7 @@ fun KeywordSetSection(keywordList: MutableList<String>, onAddBtnClick: () -> Uni
                 modifier = Modifier.height(32.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                keywordList.forEach { keyword ->
+                keywordList?.forEach { keyword ->
                     InputChip(
                         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
                         onClick = { },
@@ -94,7 +99,9 @@ fun KeywordSetSection(keywordList: MutableList<String>, onAddBtnClick: () -> Uni
                                 contentDescription = "close icon",
                                 modifier = Modifier
                                     .size(12.dp)
-                                    .clickable { keywordList.remove(keyword) }
+                                    .clickable {
+                                        // api call
+                                    }
                             )
                         },
                         colors = InputChipDefaults.inputChipColors(
@@ -104,40 +111,31 @@ fun KeywordSetSection(keywordList: MutableList<String>, onAddBtnClick: () -> Uni
                     )
                 }
 
-                // 키워드 등록 전: 추가 버튼 1개
-                // 키워드 1개 등록: 추가 버튼 2개
-                // 키워드 2개 등록: 추가 버튼 1개
-                if ((keywordList.size) < MAX) {
-                    when (keywordList.size) {
-                        0, 2 -> btnCounter = 1
-                        1 -> btnCounter = 2
-                    }
-                    repeat(btnCounter) {
-                        IconButton(
-                            onClick = {
-                                onAddBtnClick()
-                            },
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(50.dp))
-                                .size(32.dp)
-                                .background(Yellow)
-                        ) {
-                            Icon( // TODO: 나중에 svg로 바꿀 것(?)
-                                painter = painterResource(R.drawable.icon_plus),
-                                modifier = Modifier.padding(10.dp),
-                                contentDescription = null
-                            )
-                        }
+                repeat(btnCounter) {
+                    IconButton(
+                        onClick = {
+                            onAddBtnClick()
+                        },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50.dp))
+                            .size(32.dp)
+                            .background(Yellow)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_plus),
+                            modifier = Modifier.padding(10.dp),
+                            contentDescription = null
+                        )
                     }
                 }
             }
         }
+
     }
 }
 
 @Preview
 @Composable
 fun KeywordPreview() {
-    val keywordList = remember { mutableStateListOf("산불", "폭싹 속았수다", "미세먼지 위험 경보") }
-    KeywordSetSection(keywordList, {})
+    KeywordSetSection(MyPageState(), {})
 }
