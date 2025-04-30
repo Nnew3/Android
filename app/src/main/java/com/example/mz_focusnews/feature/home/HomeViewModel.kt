@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mz_focusnews.core.api.model.BreakingNews
+import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.service.ApiService
@@ -24,10 +25,29 @@ class HomeViewModel : ViewModel() {
     private val _userNewsState = MutableStateFlow(UserNewsState())
     val userNewsState: StateFlow<UserNewsState> = _userNewsState
 
+    private val _mainInfoState = MutableStateFlow(MainInfoState())
+    val mainInfoState: StateFlow<MainInfoState> = _mainInfoState
+
     init {
+        fetchMainInfo()
         fetchMainNews()
         fetchBreakingNews()
         fetchUserNews()
+    }
+
+    fun fetchMainInfo(){
+        _mainInfoState.value = MainInfoState(isLoading = true)  // 로딩 시작
+        viewModelScope.launch {
+            try {
+                val response = service.getMainInfo()
+                _mainInfoState.value = MainInfoState(info = response.data, isLoading = false)
+                Log.d("Retrofit", "fetchMainInfo called:: ${_mainInfoState.value}")
+            } catch (e: Exception) {
+                _mainInfoState.value =
+                    MainInfoState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Retrofit", "Main Info Error: ${_mainInfoState.value.errorMsg}")
+            }
+        }
     }
 
     fun fetchMainNews() {
@@ -94,6 +114,13 @@ data class BreakingState(
 
 data class UserNewsState(
     val news: NewsResponse? = null,
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
+)
+
+data class MainInfoState(
+    val info: MainInfo? = null,
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMsg: String? = null
