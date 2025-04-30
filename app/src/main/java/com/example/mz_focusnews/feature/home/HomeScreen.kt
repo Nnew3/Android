@@ -29,6 +29,7 @@ fun HomeScreen(
 ) {
     val newsState = viewModel.newsState.collectAsState().value  // StateFlow 관찰
     val breakingState = viewModel.breakingState.collectAsState().value
+    val userNewsState = viewModel.userNewsState.collectAsState().value
 
     Surface(
         modifier = Modifier
@@ -45,7 +46,7 @@ fun HomeScreen(
             // Breaking Drawer Open Button
             UserGuideSection(onDrawerOpen)
 
-            BreakingSection(breakingState){ newsId ->
+            BreakingSection(breakingState) { newsId ->
                 navigateToContent(newsId, navController)
             }
 
@@ -59,9 +60,9 @@ fun HomeScreen(
                     .background(Gray_200)
             )
 
-            RecommendedNewsSection({
-//                navigateToContent(navController)
-            })
+            UserNewsSection(userNewsState) { newsId ->
+                navigateToContent(newsId, navController)
+            }
         }
     }
 }
