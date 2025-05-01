@@ -44,8 +44,7 @@ fun UserGuideSection(mainInfoState: MainInfoState, onDrawerOpen: () -> Unit) {
 
     val weatherIcon = when (mainInfoState.info?.weather) {
         "clear" -> R.drawable.icon_clear
-        "few clouds" -> R.drawable.icon_few_clouds
-        "scattered clouds" -> R.drawable.icon_scattered_clouds
+        "clouds" -> R.drawable.icon_scattered_clouds
         "rain" -> R.drawable.icon_rain
         "snow" -> R.drawable.icon_snow
         "thunderstorm" -> R.drawable.icon_thunderstorm
