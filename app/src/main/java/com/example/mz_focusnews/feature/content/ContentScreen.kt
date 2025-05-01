@@ -94,7 +94,7 @@ fun ContentScreen(
                 BackBtn(navController, modifier = Modifier.align(Alignment.CenterStart))
 
                 Text(
-                    text = "news",
+                    text = "",
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Medium,
@@ -236,15 +236,15 @@ fun ContentScreen(
                             // 정상 응답 처리
                             else -> {
                                 Text(
-                                    text = "의대교수 사직서에 대해 더 알고싶다면?",
+                                    text = "지금 보고 있는 뉴스가 마음에 들었다면?",
                                     style = TextStyle(
                                         fontFamily = preFontFamily,
                                         fontWeight = FontWeight.Medium,
-                                        fontSize = 16.sp
+                                        fontSize = 15.sp
                                     ),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(start = 10.dp)
+                                        .padding(start = 10.dp, top = 5.dp)
                                 )
 
                                 relatedState.relatedNewsList.relatedNewsResList.forEach { news ->
