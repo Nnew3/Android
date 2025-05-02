@@ -1,5 +1,6 @@
 package com.example.mz_focusnews.feature.mypage
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -49,6 +50,10 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     var openDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+    // 로그인 구현 전까지 임시로 SP 사용
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    mypageState.mypageInfo?.let { sharedPreferences.edit().putLong("userId", it.id).apply() }
 
     LaunchedEffect(mypageState.mypageInfo) {
         mypageState.mypageInfo?.let { info ->
