@@ -2,6 +2,7 @@
 
 package com.example.mz_focusnews.feature.mypage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,13 +38,11 @@ import com.example.mz_focusnews.core.theme.Yellow
 import com.example.mz_focusnews.core.theme.preFontFamily
 import com.example.mz_focusnews.core.util.keywordSplit
 
-const val MAX = 3
-
 @Composable
-fun KeywordSetSection(myPageState: MyPageState, onAddBtnClick: () -> Unit) {
-    val keywordList = myPageState.mypageInfo?.let { keywordSplit(it.keyword) }
+fun KeywordSetSection(keyword: String, onCloseBtnClick:(keyword: String) -> Unit, onAddBtnClick: () -> Unit) {
 
-    val btnCounter = when (keywordList?.size) {
+    val keywordList = keywordSplit(keyword)
+    val btnCounter = when (keywordList.size) {
         0, 2 -> 1
         1 -> 2
         else -> 0
@@ -78,7 +77,7 @@ fun KeywordSetSection(myPageState: MyPageState, onAddBtnClick: () -> Unit) {
                 modifier = Modifier.height(32.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                keywordList?.forEach { keyword ->
+                keywordList.forEach { keyword ->
                     InputChip(
                         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
                         onClick = { },
@@ -100,7 +99,8 @@ fun KeywordSetSection(myPageState: MyPageState, onAddBtnClick: () -> Unit) {
                                 modifier = Modifier
                                     .size(12.dp)
                                     .clickable {
-                                        // api call
+                                        Log.d("Retrofit", "keyword = $keyword")
+                                        onCloseBtnClick(keyword)
                                     }
                             )
                         },
@@ -137,5 +137,5 @@ fun KeywordSetSection(myPageState: MyPageState, onAddBtnClick: () -> Unit) {
 @Preview
 @Composable
 fun KeywordPreview() {
-    KeywordSetSection(MyPageState(), {})
+//    KeywordSetSection(listOf()) {}
 }

@@ -1,5 +1,6 @@
 package com.example.mz_focusnews.feature.mypage
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,7 +41,6 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
     var alarmChecked by remember { mutableStateOf(true) }
     var locationChecked by remember { mutableStateOf(false) }
-
 
     var openDialog by remember { mutableStateOf(false) }
 
@@ -91,11 +91,21 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
                     QuizScoreSection()
 
-                    KeywordSetSection(mypageState, onAddBtnClick = { openDialog = true })
+                    KeywordSetSection(
+                        keyword = mypageState.mypageInfo.keyword,
+                        onCloseBtnClick = { keyword ->
+                            Log.d("Retrofit", "${mypageState.mypageInfo.id}, $keyword")
+                            viewModel.delUserKeyword(mypageState.mypageInfo.id, keyword)
+                        },
+                        onAddBtnClick = { openDialog = true })
 
-                    NavItemBox("최근 본 뉴스", onClick = { navController.navigate("recent/${mypageState.mypageInfo.id}") })
+                    NavItemBox(
+                        "최근 본 뉴스",
+                        onClick = { navController.navigate("recent/${mypageState.mypageInfo.id}") })
 
-                    NavItemBox("내가 좋아하는 뉴스", onClick = { navController.navigate("like/${mypageState.mypageInfo.id}") })
+                    NavItemBox(
+                        "내가 좋아하는 뉴스",
+                        onClick = { navController.navigate("like/${mypageState.mypageInfo.id}") })
 
                     ToggleItemBox(
                         title = "속보 알림 수신 동의",
@@ -128,9 +138,10 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
         if (openDialog) {
             AddKeywordDialog(
                 onDismiss = { openDialog = false },
-                onKeywordAdded = {
-
-                })
+                onKeywordAdded = { prev, new ->
+                    mypageState.mypageInfo?.let { viewModel.setUserKeyword(it.id, prev, new) }
+                }
+            )
         }
     }
 }
