@@ -109,12 +109,12 @@ data class MyPageState(
 
 data class SetKeywordState(
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val isError: Boolean? = null,
     val errorMsg: String? = null
 )
 
 data class DelKeywordState(
     val isLoading: Boolean = false,
-    val isError: Boolean = false,
+    val isError: Boolean? = null,
     val errorMsg: String? = null
 )
