@@ -46,10 +46,10 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 @Composable
 fun AddKeywordDialog(
     onDismiss: () -> Unit,
-    onKeywordAdded: (String) -> Unit
+    onKeywordAdded: (String, String) -> Unit
 ) {
 
-    var text by remember { mutableStateOf("") }
+    var input by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -102,8 +102,8 @@ fun AddKeywordDialog(
                 )
 
                 TextField(
-                    value = text,
-                    onValueChange = { text = it },
+                    value = input,
+                    onValueChange = { input = it },
                     maxLines = 1,
                     textStyle = TextStyle( // 입력된 텍스트 스타일 지정
                         fontFamily = preFontFamily,
@@ -162,7 +162,7 @@ fun AddKeywordDialog(
 
                     TextButton(
                         onClick = {
-                            onKeywordAdded(text)
+                            onKeywordAdded("", input)
                             onDismiss()
                         },
                         modifier = Modifier
@@ -197,6 +197,6 @@ fun DialogPreview() {
             .fillMaxSize()
             .background(Color.Black)
     ) {
-        AddKeywordDialog({ }, { })
+//        AddKeywordDialog({ }, { })
     }
 }

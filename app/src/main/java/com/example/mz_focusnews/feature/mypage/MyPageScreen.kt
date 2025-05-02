@@ -1,5 +1,7 @@
 package com.example.mz_focusnews.feature.mypage
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,17 +40,38 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
     val mypageState = viewModel.mypageState.collectAsState().value
+    val setKeywordState = viewModel.setKeywordState.collectAsState().value
+    val delKeywordState = viewModel.delKeywordState.collectAsState().value
 
     var alarmChecked by remember { mutableStateOf(true) }
     var locationChecked by remember { mutableStateOf(false) }
 
-
     var openDialog by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     LaunchedEffect(mypageState.mypageInfo) {
         mypageState.mypageInfo?.let { info ->
             alarmChecked = info.alarm
             locationChecked = info.location
+        }
+    }
+
+    // 등록 성공 시 Toast
+    LaunchedEffect(setKeywordState.isError) {
+        when (setKeywordState.isError) {
+            false -> Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
+            true -> Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            null -> {}
+        }
+    }
+
+    // 삭제 성공 시 Toast
+    LaunchedEffect(delKeywordState.isError) {
+        when (delKeywordState.isError) {
+            false -> Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
+            true -> Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            null -> {}
         }
     }
 
@@ -91,11 +115,23 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
                     QuizScoreSection()
 
-                    KeywordSetSection(mypageState, onAddBtnClick = { openDialog = true })
+                    KeywordSetSection(
+                        keyword = mypageState.mypageInfo.keyword,
+                        onCloseBtnClick = { keyword ->
+                            Log.d("Retrofit", "${mypageState.mypageInfo.id}, $keyword")
+                            viewModel.delUserKeyword(mypageState.mypageInfo.id, keyword)
+                        },
 
-                    NavItemBox("최근 본 뉴스", onClick = { navController.navigate("recent/${mypageState.mypageInfo.id}") })
+                        onAddBtnClick = { openDialog = true }
+                    )
 
-                    NavItemBox("내가 좋아하는 뉴스", onClick = { navController.navigate("like/${mypageState.mypageInfo.id}") })
+                    NavItemBox(
+                        title = "최근 본 뉴스",
+                        onClick = { navController.navigate("recent/${mypageState.mypageInfo.id}") })
+
+                    NavItemBox(
+                        title = "내가 좋아하는 뉴스",
+                        onClick = { navController.navigate("like/${mypageState.mypageInfo.id}") })
 
                     ToggleItemBox(
                         title = "속보 알림 수신 동의",
@@ -128,9 +164,10 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
         if (openDialog) {
             AddKeywordDialog(
                 onDismiss = { openDialog = false },
-                onKeywordAdded = {
-
-                })
+                onKeywordAdded = { prev, new ->
+                    mypageState.mypageInfo?.let { viewModel.setUserKeyword(it.id, prev, new) }
+                }
+            )
         }
     }
 }
