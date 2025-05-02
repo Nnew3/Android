@@ -67,9 +67,12 @@ fun ContentScreen(
 
     val context = LocalContext.current
 
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val userId = sharedPreferences.getLong("userId", -1)
+
     LaunchedEffect(newsId) {
         val id = newsId.toLongOrNull() ?: 0L
-        viewModel.fetchNewsDetail(id) // id가 변경될 때마다 새로운 데이터를 가져오도록 호출
+        viewModel.fetchNewsDetail(userId, id) // id가 변경될 때마다 새로운 데이터를 가져오도록 호출
         viewModel.fetchRelatedNews(id)
     }
 
