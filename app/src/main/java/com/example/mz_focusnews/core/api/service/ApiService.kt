@@ -7,12 +7,12 @@ import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import com.example.mz_focusnews.core.api.model.NewsList
 import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.MyPageInfo
+import com.example.mz_focusnews.core.api.model.NewsActionRequest
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsResponse
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
@@ -66,6 +66,11 @@ interface ApiService {
     @HTTP(method = "DELETE", path = "/user/v1/keyword", hasBody = true)
     suspend fun deleteUserKeyword(
         @Body req: DelKeywordRequest
+    ): ApiResponse<Unit>
+
+    @POST("/user/v1/news/view")
+    suspend fun logWatchNews(
+        @Body req:NewsActionRequest
     ): ApiResponse<Unit>
 }
 
