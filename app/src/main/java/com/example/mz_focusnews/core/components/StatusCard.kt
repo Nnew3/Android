@@ -26,12 +26,18 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun StatusCard(bgColor: Color = Color.Transparent, radius: Dp = 12.dp, imgRes: Int, msg: String) {
+fun StatusCard(
+    bgColor: Color = Color.Transparent,
+    radius: Dp = 12.dp,
+    showImage: Boolean = true,
+    imgRes: Int,
+    msg: String
+) {
     Card(
         modifier = Modifier
             .fillMaxSize()
             .clip(RoundedCornerShape(radius)),
-        colors= CardDefaults.cardColors(
+        colors = CardDefaults.cardColors(
             containerColor = bgColor
         ),
     ) {
@@ -43,11 +49,15 @@ fun StatusCard(bgColor: Color = Color.Transparent, radius: Dp = 12.dp, imgRes: I
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Image(
-                modifier = Modifier.size(60.dp),
-                painter = painterResource(imgRes),
-                contentDescription = "Error Kitty Image",
-            )
+            if (showImage) {
+                Image(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(bottom = 12.dp),
+                    painter = painterResource(imgRes),
+                    contentDescription = "Error Kitty Image",
+                )
+            }
 
             Text(
                 text = msg,
@@ -57,8 +67,7 @@ fun StatusCard(bgColor: Color = Color.Transparent, radius: Dp = 12.dp, imgRes: I
                     fontWeight = FontWeight.Medium,
                     color = Color.Black,
                     fontSize = 14.sp
-                ),
-                modifier = Modifier.padding(top = 12.dp)
+                )
             )
         }
     }

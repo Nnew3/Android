@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,7 +29,6 @@ import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.StatusCard
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.MyIconPack
-import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.myiconpack.Bell
 import com.example.mz_focusnews.core.theme.preFontFamily
 
@@ -56,22 +57,24 @@ fun UserGuideSection(mainInfoState: MainInfoState, onDrawerOpen: () -> Unit) {
             modifier = Modifier
                 .background(Bg_Blue)
                 .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .padding(top = 20.dp)
         ) {
             Row {
                 when {
                     mainInfoState.isLoading -> {
                         StatusCard(
-                            bgColor = Today_Blue,
+                            showImage = false,
                             imgRes = R.drawable.img_loading_kitty,
-                            msg = "사용자 정보를 가져오는 중이에요!"
+                            msg = "사용자 정보를 가져오는 중이에요!",
                         )
                     }
 
                     mainInfoState.isError -> {
                         StatusCard(
-                            bgColor = Today_Blue,
+                            showImage = false,
                             imgRes = R.drawable.img_network_kitty,
-                            msg = "네트워크 오류가 발생했어요"
+                            msg = "네트워크 오류가 발생했어요",
                         )
                     }
 
@@ -80,7 +83,7 @@ fun UserGuideSection(mainInfoState: MainInfoState, onDrawerOpen: () -> Unit) {
                             Text(
                                 text = guideText,
                                 modifier = Modifier
-                                    .padding(top = 20.dp, bottom = 12.dp)
+                                    .padding(bottom = 12.dp)
                                     .background(Color.Transparent),
                                 style = TextStyle(
                                     fontFamily = preFontFamily,
