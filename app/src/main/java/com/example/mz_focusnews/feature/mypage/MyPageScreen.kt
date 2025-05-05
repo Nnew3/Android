@@ -1,7 +1,5 @@
 package com.example.mz_focusnews.feature.mypage
 
-import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,16 +42,14 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     val setKeywordState = viewModel.setKeywordState.collectAsState().value
     val delKeywordState = viewModel.delKeywordState.collectAsState().value
 
+    val keywords by viewModel.keywords.collectAsState() // 전역 키워드 구독
+
     var alarmChecked by remember { mutableStateOf(true) }
     var locationChecked by remember { mutableStateOf(false) }
 
     var openDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
-    // 로그인 구현 전까지 임시로 SP 사용
-    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    mypageState.mypageInfo?.let { sharedPreferences.edit().putLong("userId", it.id).apply() }
 
     LaunchedEffect(mypageState.mypageInfo) {
         mypageState.mypageInfo?.let { info ->
@@ -63,21 +59,29 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     }
 
     // 등록 성공 시 Toast
-    LaunchedEffect(setKeywordState.isError) {
-        when (setKeywordState.isError) {
-            false -> Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
-            true -> Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
-            null -> {}
+    when (setKeywordState.isError) {
+        false -> {
+            Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
+            setKeywordState.isError = null
         }
+        true -> {
+            Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            setKeywordState.isError = null
+        }
+        null -> {}
     }
 
     // 삭제 성공 시 Toast
-    LaunchedEffect(delKeywordState.isError) {
-        when (delKeywordState.isError) {
-            false -> Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
-            true -> Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
-            null -> {}
+    when (delKeywordState.isError) {
+        false -> {
+            Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
+            delKeywordState.isError = null
         }
+        true -> {
+            Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            delKeywordState.isError = null
+        }
+        null -> {}
     }
 
     Surface(
@@ -121,9 +125,8 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
                     QuizScoreSection()
 
                     KeywordSetSection(
-                        keyword = mypageState.mypageInfo.keyword,
+                        keyword = keywords,
                         onCloseBtnClick = { keyword ->
-                            Log.d("Retrofit", "${mypageState.mypageInfo.id}, $keyword")
                             viewModel.delUserKeyword(mypageState.mypageInfo.id, keyword)
                         },
 
