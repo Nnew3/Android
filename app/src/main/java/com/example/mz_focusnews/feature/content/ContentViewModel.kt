@@ -22,21 +22,18 @@ class ContentViewModel : ViewModel() {
     val relatedState: StateFlow<RelatedState> = _relatedState
 
     private val _logState = MutableStateFlow(LogState())
-    val logState: StateFlow<LogState> = _logState
 
     fun fetchNewsDetail(userId: Long, newsId: Long) {
-        logWatchNews(1, newsId)
+        logWatchNews(userId, newsId)
         _contentState.value = ContentState(isLoading = true)  // 로딩 시작
 
         viewModelScope.launch {
             try {
                 val response = service.getNewsDetail(newsId)
-                _contentState.value =
-                    ContentState(newsDetail = response.data, isLoading = false, isError = false)
+                _contentState.value = ContentState(newsDetail = response.data, isLoading = false, isError = false)
                 Log.d("Retrofit", "fetchNewsDetail called:: ${_contentState.value}")
             } catch (e: Exception) {
-                _contentState.value =
-                    ContentState(isLoading = false, isError = true, errorMsg = e.message)
+                _contentState.value = ContentState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "News Detail Error: ${_contentState.value.errorMsg}")
             }
         }
@@ -68,9 +65,7 @@ class ContentViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                service.logWatchNews(
-                    NewsActionRequest(userId, newsId)
-                )
+                service.logWatchNews(NewsActionRequest(userId, newsId))
 
                 _logState.value = LogState(isLoading = false, isError = false)
 
@@ -78,7 +73,7 @@ class ContentViewModel : ViewModel() {
             } catch (e: Exception) {
                 _logState.value =
                     LogState(isLoading = false, isError = true, errorMsg = e.message)
-                Log.e("Retrofit", "Log RecentNews News Error: ${_logState.value.errorMsg}")
+                Log.e("Retrofit", "Log Recent News News Error: ${_logState.value.errorMsg}")
             }
         }
     }
