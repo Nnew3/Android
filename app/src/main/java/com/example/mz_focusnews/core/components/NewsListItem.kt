@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.mz_focusnews.core.api.model.NewsPreview
 import com.example.mz_focusnews.core.theme.preFontFamily
+import com.example.mz_focusnews.core.util.stringSplit
 
 @Composable
 fun NewsListItem(onClick: () -> Unit, news: NewsPreview) {
@@ -51,7 +52,7 @@ fun NewsListItem(onClick: () -> Unit, news: NewsPreview) {
             )
 
             Text(
-                text = news.title,
+                text = stringSplit(45, news.title),
                 style = TextStyle(
                     fontFamily = preFontFamily,
                     fontWeight = FontWeight.Medium,
