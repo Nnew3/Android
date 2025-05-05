@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mz_focusnews.core.api.model.DelKeywordRequest
 import com.example.mz_focusnews.core.api.model.MyPageInfo
+import com.example.mz_focusnews.core.api.model.PermissionRequest
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
 import com.example.mz_focusnews.core.util.keywordSplit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MyPageViewModel : ViewModel() {
@@ -25,8 +27,13 @@ class MyPageViewModel : ViewModel() {
     private val _delKeywordState = MutableStateFlow(DelKeywordState())
     val delKeywordState: StateFlow<DelKeywordState> = _delKeywordState
 
+    private val _alarmState = MutableStateFlow(AlarmState())
+
     private val _keywords = MutableStateFlow<Set<String>>(emptySet())
     val keywords: StateFlow<Set<String>> = _keywords
+
+    private val _isAlarm = MutableStateFlow(false)
+    val isAlarm: StateFlow<Boolean> = _isAlarm.asStateFlow()
 
     init {
         fetchMyPageInfo()
@@ -38,14 +45,18 @@ class MyPageViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = service.getMyPageInfo()
-                _mypageState.value = MyPageState(mypageInfo = response.data, isLoading = false, isError = false)
+                _mypageState.value =
+                    MyPageState(mypageInfo = response.data, isLoading = false, isError = false)
 
                 val keywordStr = response.data.keyword
                 _keywords.value = keywordSplit(keywordStr).toSet()
 
+                _isAlarm.value = response.data.alarm
+
                 Log.d("Retrofit", "fetchMyPageInfo called:: ${_mypageState.value}")
             } catch (e: Exception) {
-                _mypageState.value = MyPageState(isLoading = false, isError = true, errorMsg = e.message)
+                _mypageState.value =
+                    MyPageState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "MyPage Info Error: ${_mypageState.value.errorMsg}")
             }
         }
@@ -70,7 +81,8 @@ class MyPageViewModel : ViewModel() {
 
                 Log.d("Retrofit", "setKeyword called:: ${_setKeywordState.value}")
             } catch (e: Exception) {
-                _setKeywordState.value = SetKeywordState(isLoading = false, isError = true, errorMsg = e.message)
+                _setKeywordState.value =
+                    SetKeywordState(isLoading = false, isError = true, errorMsg = e.message)
 
                 fetchMyPageInfo() // 실패 시 동기화
                 Log.e("Retrofit", "Set Keyword Error: ${_setKeywordState.value.errorMsg}")
@@ -103,6 +115,27 @@ class MyPageViewModel : ViewModel() {
             }
         }
     }
+
+    fun toggleAlarm(userId: Long, checked: Boolean) {
+        _alarmState.value = AlarmState(isLoading = true)  // 로딩 시작
+
+        Log.d("Alarm", "TOGGLE: alarm set ${checked}")
+
+        viewModelScope.launch {
+            try {
+                service.updateAlarmSetting(PermissionRequest(userId, checked))
+
+                _alarmState.value = AlarmState(isLoading = false, isError = false)
+                _isAlarm.value = checked
+
+                Log.d("Alarm", "toggleAlarm called:: ${_alarmState.value}")
+            } catch (e: Exception) {
+                _alarmState.value = AlarmState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Alarm", "Toggle Alarm Error: ${_alarmState.value.errorMsg}")
+
+            }
+        }
+    }
 }
 
 data class MyPageState(
@@ -119,6 +152,12 @@ data class SetKeywordState(
 )
 
 data class DelKeywordState(
+    val isLoading: Boolean = false,
+    var isError: Boolean? = null,
+    val errorMsg: String? = null
+)
+
+data class AlarmState(
     val isLoading: Boolean = false,
     var isError: Boolean? = null,
     val errorMsg: String? = null

@@ -1,6 +1,11 @@
 package com.example.mz_focusnews.feature.mypage
 
+import android.Manifest
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,19 +49,12 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
     val keywords by viewModel.keywords.collectAsState() // 전역 키워드 구독
 
-    var alarmChecked by remember { mutableStateOf(true) }
+    val isAlarm by viewModel.isAlarm.collectAsState()
     var locationChecked by remember { mutableStateOf(false) }
 
     var openDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
-    LaunchedEffect(mypageState.mypageInfo) {
-        mypageState.mypageInfo?.let { info ->
-            alarmChecked = info.alarm
-            locationChecked = info.location
-        }
-    }
 
     // 등록 성공 시 Toast
     when (setKeywordState.isError) {
@@ -64,10 +62,12 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
             Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
             setKeywordState.isError = null
         }
+
         true -> {
             Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
             setKeywordState.isError = null
         }
+
         null -> {}
     }
 
@@ -77,10 +77,12 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
             Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
             delKeywordState.isError = null
         }
+
         true -> {
             Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
             delKeywordState.isError = null
         }
+
         null -> {}
     }
 
@@ -143,8 +145,10 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
                     ToggleItemBox(
                         title = "속보 알림 수신 동의",
-                        checked = alarmChecked,
-                        onCheckedChange = { alarmChecked = it }
+                        checked = isAlarm,
+                        onCheckedChange = {
+                            viewModel.toggleAlarm(userId = 1, it)
+                        }
                     )
 
                     ToggleItemBox(
