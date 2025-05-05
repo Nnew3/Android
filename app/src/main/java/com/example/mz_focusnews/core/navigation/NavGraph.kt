@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.mz_focusnews.LikeManagerViewModel
 import com.example.mz_focusnews.core.components.BottomNavItem
 import com.example.mz_focusnews.feature.category.CategoryScreen
 import com.example.mz_focusnews.feature.category.CategoryViewModel
@@ -17,7 +18,6 @@ import com.example.mz_focusnews.feature.content.ContentViewModel
 import com.example.mz_focusnews.feature.home.HomeScreen
 import com.example.mz_focusnews.feature.home.HomeViewModel
 import com.example.mz_focusnews.feature.like.LikeNewsScreen
-import com.example.mz_focusnews.feature.like.LikeNewsViewModel
 import com.example.mz_focusnews.feature.mypage.MyPageScreen
 import com.example.mz_focusnews.feature.mypage.MyPageViewModel
 import com.example.mz_focusnews.feature.quiz.QuizIntroScreen
@@ -32,6 +32,8 @@ import com.example.mz_focusnews.feature.recent.RecentNewsViewModel
 fun NavGraph(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
+    myPageViewModel: MyPageViewModel,
+    likeManagerViewModel: LikeManagerViewModel,
     onDrawerOpen: () -> Unit
 ) {
     NavHost(navController = navController, startDestination = BottomNavItem.Home.route) {
@@ -49,8 +51,7 @@ fun NavGraph(
         }
 
         composable(BottomNavItem.MyPage.route) {
-            val viewModel: MyPageViewModel = viewModel()
-            MyPageScreen(viewModel, navController)
+            MyPageScreen(myPageViewModel, navController)
         }
 
         composable(
@@ -58,17 +59,14 @@ fun NavGraph(
             arguments = listOf(navArgument("newsId") { type = NavType.StringType })
         ) { backStackEntry ->
             val newsIdStr = backStackEntry.arguments?.getString("newsId") ?: "0"
-            val viewModel: ContentViewModel = viewModel(backStackEntry)
-            ContentScreen(viewModel, newsIdStr, navController)
+            val contentViewModel: ContentViewModel = viewModel(backStackEntry)
+            ContentScreen(contentViewModel, likeManagerViewModel, newsIdStr, navController)
         }
 
         composable(
             route = ScreenRoute.Like.route,
-            arguments = listOf(navArgument("userId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val viewModel: LikeNewsViewModel = viewModel(backStackEntry)
-
-            LikeNewsScreen(viewModel, navController)
+        ) {
+            LikeNewsScreen(likeManagerViewModel, navController)
         }
 
         composable(
@@ -76,7 +74,6 @@ fun NavGraph(
             arguments = listOf(navArgument("userId") { type = NavType.StringType })
         ) { backStackEntry ->
             val viewModel: RecentNewsViewModel = viewModel(backStackEntry)
-
             RecentNewsScreen(viewModel, navController)
         }
 

@@ -1,9 +1,9 @@
 package com.example.mz_focusnews.feature.content
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mz_focusnews.core.api.model.NewsActionRequest
 import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import com.example.mz_focusnews.core.api.service.ApiService
@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ContentViewModel(
-    savedStateHandle: SavedStateHandle // NavController로 넘긴 인자를 받기 위함
-) : ViewModel() {
+class ContentViewModel : ViewModel() {
     private val service: ApiService = RetrofitClient.getInstance().create(ApiService::class.java)
 
     private val _contentState = MutableStateFlow(ContentState())
@@ -23,25 +21,19 @@ class ContentViewModel(
     private val _relatedState = MutableStateFlow(RelatedState())
     val relatedState: StateFlow<RelatedState> = _relatedState
 
-    val newsId = savedStateHandle.get<String>("newsId")?.toLongOrNull() ?: 0L
+    private val _logState = MutableStateFlow(LogState())
 
-    init {
-        fetchNewsDetail(newsId)
-        fetchRelatedNews(newsId)
-    }
-
-    fun fetchNewsDetail(newsId: Long) {
+    fun fetchNewsDetail(userId: Long, newsId: Long) {
+        logWatchNews(userId, newsId)
         _contentState.value = ContentState(isLoading = true)  // 로딩 시작
 
         viewModelScope.launch {
             try {
                 val response = service.getNewsDetail(newsId)
-                _contentState.value =
-                    ContentState(newsDetail = response.data, isLoading = false, isError = false)
+                _contentState.value = ContentState(newsDetail = response.data, isLoading = false, isError = false)
                 Log.d("Retrofit", "fetchNewsDetail called:: ${_contentState.value}")
             } catch (e: Exception) {
-                _contentState.value =
-                    ContentState(isLoading = false, isError = true, errorMsg = e.message)
+                _contentState.value = ContentState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "News Detail Error: ${_contentState.value.errorMsg}")
             }
         }
@@ -53,13 +45,35 @@ class ContentViewModel(
         viewModelScope.launch {
             try {
                 val response = service.getRelatedNews(newsId)
-                _relatedState.value = RelatedState(relatedNewsList = response.data, isLoading = false, isError = false
+                _relatedState.value = RelatedState(
+                    relatedNewsList = response.data,
+                    isLoading = false,
+                    isError = false
                 )
+
                 Log.d("Retrofit", "fetchRelatedNews called:: ${_relatedState.value}")
             } catch (e: Exception) {
                 _relatedState.value =
                     RelatedState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "Related News Error: ${_relatedState.value.errorMsg}")
+            }
+        }
+    }
+
+    fun logWatchNews(userId: Long, newsId: Long) {
+        _logState.value = LogState(isLoading = true)  // 로딩 시작
+
+        viewModelScope.launch {
+            try {
+                service.logWatchNews(NewsActionRequest(userId, newsId))
+
+                _logState.value = LogState(isLoading = false, isError = false)
+
+                Log.d("Retrofit", "logRecentNews called($userId, $newsId):: ${_logState.value}")
+            } catch (e: Exception) {
+                _logState.value =
+                    LogState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Retrofit", "Log Recent News News Error: ${_logState.value.errorMsg}")
             }
         }
     }
@@ -74,6 +88,12 @@ data class ContentState(
 
 data class RelatedState(
     val relatedNewsList: RelatedNewsList? = null,
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
+)
+
+data class LogState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMsg: String? = null

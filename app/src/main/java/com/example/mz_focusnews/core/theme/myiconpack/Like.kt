@@ -18,12 +18,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mz_focusnews.core.theme.MyIconPack
 
-public val MyIconPack.Bookmark: ImageVector
+public val MyIconPack.Like: ImageVector
     get() {
-        if (_bookmark != null) {
-            return _bookmark!!
+        if (_like != null) {
+            return _like!!
         }
-        _bookmark = Builder(name = "Bookmark", defaultWidth = 512.0.dp, defaultHeight = 512.0.dp,
+        _like = Builder(name = "Like", defaultWidth = 512.0.dp, defaultHeight = 512.0.dp,
             viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
             path(fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
                 strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
@@ -49,16 +49,16 @@ public val MyIconPack.Bookmark: ImageVector
             }
         }
             .build()
-        return _bookmark!!
+        return _like!!
     }
 
 
-private var _bookmark: ImageVector? = null
+private var _like: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview(): Unit {
     Box(modifier = Modifier.padding(12.dp).background(Color.White)) {
-        Image(imageVector = MyIconPack.Bookmark, contentDescription = "")
+        Image(imageVector = MyIconPack.Like, contentDescription = "")
     }
 }

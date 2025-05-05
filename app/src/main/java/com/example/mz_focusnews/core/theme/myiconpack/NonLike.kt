@@ -18,13 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mz_focusnews.core.theme.MyIconPack
 
-public val MyIconPack.NonBookmark: ImageVector
+public val MyIconPack.NonLike: ImageVector
     get() {
-        if (_nonbookmark != null) {
-            return _nonbookmark!!
+        if (_nonlike != null) {
+            return _nonlike!!
         }
-        _nonbookmark = Builder(
-            name = "Star", defaultWidth = 512.0.dp, defaultHeight = 512.0.dp,
+        _nonlike = Builder(
+            name = "NonLike", defaultWidth = 512.0.dp, defaultHeight = 512.0.dp,
             viewportWidth = 24.0f, viewportHeight = 24.0f
         ).apply {
             path(
@@ -76,16 +76,16 @@ public val MyIconPack.NonBookmark: ImageVector
             }
         }
             .build()
-        return _nonbookmark!!
+        return _nonlike!!
     }
 
 
-private var _nonbookmark: ImageVector? = null
+private var _nonlike: ImageVector? = null
 
 @Preview
 @Composable
 private fun Preview(): Unit {
     Box(modifier = Modifier.padding(12.dp).background(Color.White)) {
-        Image(imageVector = MyIconPack.NonBookmark, contentDescription = "")
+        Image(imageVector = MyIconPack.NonLike, contentDescription = "")
     }
 }

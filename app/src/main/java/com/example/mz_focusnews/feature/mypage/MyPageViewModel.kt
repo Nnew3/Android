@@ -8,6 +8,7 @@ import com.example.mz_focusnews.core.api.model.MyPageInfo
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
+import com.example.mz_focusnews.core.util.keywordSplit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +25,9 @@ class MyPageViewModel : ViewModel() {
     private val _delKeywordState = MutableStateFlow(DelKeywordState())
     val delKeywordState: StateFlow<DelKeywordState> = _delKeywordState
 
+    private val _keywords = MutableStateFlow<Set<String>>(emptySet())
+    val keywords: StateFlow<Set<String>> = _keywords
+
     init {
         fetchMyPageInfo()
     }
@@ -34,13 +38,14 @@ class MyPageViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 val response = service.getMyPageInfo()
-                _mypageState.value =
-                    MyPageState(mypageInfo = response.data, isLoading = false, isError = false)
+                _mypageState.value = MyPageState(mypageInfo = response.data, isLoading = false, isError = false)
+
+                val keywordStr = response.data.keyword
+                _keywords.value = keywordSplit(keywordStr).toSet()
 
                 Log.d("Retrofit", "fetchMyPageInfo called:: ${_mypageState.value}")
             } catch (e: Exception) {
-                _mypageState.value =
-                    MyPageState(isLoading = false, isError = true, errorMsg = e.message)
+                _mypageState.value = MyPageState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "MyPage Info Error: ${_mypageState.value.errorMsg}")
             }
         }
@@ -49,6 +54,7 @@ class MyPageViewModel : ViewModel() {
     fun setUserKeyword(id: Long, prevKeyword: String, newKeyword: String) {
         _setKeywordState.value = SetKeywordState(isLoading = true)  // 로딩 시작
 
+        val currentSet = _keywords.value
         viewModelScope.launch {
             try {
                 service.setUserKeyword(
@@ -59,14 +65,14 @@ class MyPageViewModel : ViewModel() {
                     )
                 )
 
+                _keywords.value = currentSet + newKeyword
                 _setKeywordState.value = SetKeywordState(isLoading = false, isError = false)
-
-                fetchMyPageInfo()
 
                 Log.d("Retrofit", "setKeyword called:: ${_setKeywordState.value}")
             } catch (e: Exception) {
-                _setKeywordState.value =
-                    SetKeywordState(isLoading = false, isError = true, errorMsg = e.message)
+                _setKeywordState.value = SetKeywordState(isLoading = false, isError = true, errorMsg = e.message)
+
+                fetchMyPageInfo() // 실패 시 동기화
                 Log.e("Retrofit", "Set Keyword Error: ${_setKeywordState.value.errorMsg}")
             }
         }
@@ -74,6 +80,7 @@ class MyPageViewModel : ViewModel() {
 
     fun delUserKeyword(userId: Long, keyword: String) {
         _delKeywordState.value = DelKeywordState(isLoading = true)  // 로딩 시작
+        val currentSet = _keywords.value
 
         viewModelScope.launch {
             try {
@@ -84,19 +91,17 @@ class MyPageViewModel : ViewModel() {
                     )
                 )
 
+                _keywords.value = currentSet - keyword
                 _delKeywordState.value = DelKeywordState(isLoading = false, isError = false)
 
-                fetchMyPageInfo()
-
                 Log.d("Retrofit", "delKeyword called:: ${_delKeywordState.value}")
-
             } catch (e: Exception) {
-                _delKeywordState.value =
-                    DelKeywordState(isLoading = false, isError = true, errorMsg = e.message)
+                _delKeywordState.value = DelKeywordState(isLoading = false, isError = true, errorMsg = e.message)
+
+                fetchMyPageInfo() // 실패 시 동기화
                 Log.e("Retrofit", "Delete Keyword Error: ${_delKeywordState.value.errorMsg}")
             }
         }
-
     }
 }
 
@@ -109,12 +114,12 @@ data class MyPageState(
 
 data class SetKeywordState(
     val isLoading: Boolean = false,
-    val isError: Boolean? = null,
+    var isError: Boolean? = null,
     val errorMsg: String? = null
 )
 
 data class DelKeywordState(
     val isLoading: Boolean = false,
-    val isError: Boolean? = null,
+    var isError: Boolean? = null,
     val errorMsg: String? = null
 )
