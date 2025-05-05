@@ -36,13 +36,15 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.theme.Yellow
 import com.example.mz_focusnews.core.theme.preFontFamily
-import com.example.mz_focusnews.core.util.keywordSplit
 
 @Composable
-fun KeywordSetSection(keyword: String, onCloseBtnClick:(keyword: String) -> Unit, onAddBtnClick: () -> Unit) {
+fun KeywordSetSection(
+    keyword: Set<String>,
+    onCloseBtnClick: (keyword: String) -> Unit,
+    onAddBtnClick: () -> Unit
+) {
 
-    val keywordList = keywordSplit(keyword)
-    val btnCounter = when (keywordList.size) {
+    val btnCounter = when (keyword.size) {
         0, 2 -> 1
         1 -> 2
         else -> 0
@@ -77,7 +79,7 @@ fun KeywordSetSection(keyword: String, onCloseBtnClick:(keyword: String) -> Unit
                 modifier = Modifier.height(32.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                keywordList.forEach { keyword ->
+                keyword.forEach { keyword ->
                     InputChip(
                         modifier = Modifier.clip(RoundedCornerShape(20.dp)),
                         onClick = { },
@@ -99,7 +101,7 @@ fun KeywordSetSection(keyword: String, onCloseBtnClick:(keyword: String) -> Unit
                                 modifier = Modifier
                                     .size(12.dp)
                                     .clickable {
-                                        Log.d("Retrofit", "keyword = $keyword")
+                                        Log.d("Retrofit", "deleted keyword = $keyword")
                                         onCloseBtnClick(keyword)
                                     }
                             )

@@ -1,5 +1,6 @@
 package com.example.mz_focusnews.feature.like
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.mz_focusnews.LikeManagerViewModel
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.NewsListItem
 import com.example.mz_focusnews.core.components.StatusCard
@@ -23,10 +27,25 @@ import com.example.mz_focusnews.core.theme.Bg_Blue
 
 @Composable
 fun LikeNewsScreen(
-    viewModel: LikeNewsViewModel,
+    viewModel: LikeManagerViewModel,
     navController: NavController
 ) {
-    val likeNewsState = viewModel.likeNewsState.collectAsState().value
+    val newsList by viewModel.likeNewsList.collectAsState()
+    val likedIds by viewModel.likedIds.collectAsState()
+
+    val likeState = viewModel.likeState.collectAsState().value
+
+    val shownList = newsList.filter { it.id in likedIds }
+
+    val context = LocalContext.current
+
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    val userId = sharedPreferences.getLong("userId", -1)
+
+    // 좋아요 리스트
+    LaunchedEffect(userId) {
+        viewModel.fetchLikeNews(userId)
+    }
 
     Surface(
         modifier = Modifier
@@ -41,7 +60,7 @@ fun LikeNewsScreen(
             TopSection("내가 좋아하는 뉴스", navController)
 
             when {
-                likeNewsState.isLoading -> {
+                likeState.isLoading -> {
                     StatusCard(
                         imgRes = R.drawable.img_loading_kitty,
                         msg = "뉴스를 불러오는 중이에요!"
@@ -49,14 +68,14 @@ fun LikeNewsScreen(
                 }
 
                 // 에러 처리
-                likeNewsState.isError -> {
+                likeState.isError -> {
                     StatusCard(
                         imgRes = R.drawable.img_network_kitty,
                         msg = "네트워크 오류가 발생했어요"
                     )
                 }
 
-                (likeNewsState.newsList == null) ->
+                (newsList.isEmpty()) ->
                     StatusCard(
                         imgRes = R.drawable.img_error_kitty,
                         msg = "사용자가 좋아하는 뉴스가 없어요"
@@ -70,13 +89,12 @@ fun LikeNewsScreen(
                             .background(Bg_Blue),
                         verticalArrangement = Arrangement.spacedBy(15.dp)
                     ) {
-                        items(likeNewsState.newsList.newsList) { news ->
+                        items(shownList) { news ->
                             NewsListItem({ navController.navigate("content/${news.id}") }, news)
                         }
                     }
                 }
             }
         }
-
     }
 }

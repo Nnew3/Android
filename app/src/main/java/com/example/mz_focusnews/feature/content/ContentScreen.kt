@@ -20,9 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,42 +36,49 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.mz_focusnews.LikeManagerViewModel
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.BackBtn
-import com.example.mz_focusnews.core.components.BookmarkBtn
+import com.example.mz_focusnews.core.components.LikeBtn
 import com.example.mz_focusnews.core.components.RoundedCornerBox
 import com.example.mz_focusnews.core.components.StatusCard
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_900
 import com.example.mz_focusnews.core.theme.MyIconPack
 import com.example.mz_focusnews.core.theme.Today_Blue
-import com.example.mz_focusnews.core.theme.myiconpack.Bookmark
-import com.example.mz_focusnews.core.theme.myiconpack.NonBookmark
+import com.example.mz_focusnews.core.theme.myiconpack.Like
+import com.example.mz_focusnews.core.theme.myiconpack.NonLike
 import com.example.mz_focusnews.core.theme.preFontFamily
 import com.example.mz_focusnews.core.util.summaryToThree
 
 @Composable
 fun ContentScreen(
-    viewModel: ContentViewModel,
-    newsId: String,
+    contentViewModel: ContentViewModel,
+    likeManagerViewModel: LikeManagerViewModel,
+    contentNewsId: String,
     navController: NavController
 ) {
-    val contentState = viewModel.contentState.collectAsState().value
-    val relatedState = viewModel.relatedState.collectAsState().value
-
-    var isBookmarked by remember { mutableStateOf(false) } // 북마크 여부
-    val iconRes = if (isBookmarked) MyIconPack.Bookmark else MyIconPack.NonBookmark
+    val contentState = contentViewModel.contentState.collectAsState().value
+    val relatedState = contentViewModel.relatedState.collectAsState().value
 
     val context = LocalContext.current
 
     val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
     val userId = sharedPreferences.getLong("userId", -1)
 
+    val newsId = contentNewsId.toLongOrNull() ?: 0L
+
+    // id가 변경될 때마다 새로운 데이터를 가져오도록 호출
     LaunchedEffect(newsId) {
-        val id = newsId.toLongOrNull() ?: 0L
-        viewModel.fetchNewsDetail(userId, id) // id가 변경될 때마다 새로운 데이터를 가져오도록 호출
-        viewModel.fetchRelatedNews(id)
+        contentViewModel.fetchNewsDetail(userId, newsId)
+        contentViewModel.fetchRelatedNews(newsId)
     }
+
+    // 전역 좋아요 상태 구독
+    val likedNews by likeManagerViewModel.likedIds.collectAsState()
+    val isLiked = likedNews.contains(newsId)
+
+    val iconRes = if (isLiked) MyIconPack.Like else MyIconPack.NonLike
 
     Surface(
         modifier = Modifier
@@ -107,9 +111,12 @@ fun ContentScreen(
                     textAlign = TextAlign.Center
                 )
 
-                BookmarkBtn(
+                LikeBtn(
                     modifier = Modifier.align(Alignment.CenterEnd),
-                    onClick = { isBookmarked = !isBookmarked },
+                    onClick =
+                    {
+                        likeManagerViewModel.toggleLike(userId, newsId)
+                    },
                     iconRes = iconRes
                 )
             }
@@ -292,5 +299,5 @@ private fun openWebPage(context: Context, url: String) {
 @Preview
 @Composable
 fun ContentPreview() {
-    ContentScreen(viewModel(), "0", rememberNavController())
+    ContentScreen(viewModel(), viewModel(), "0", rememberNavController())
 }
