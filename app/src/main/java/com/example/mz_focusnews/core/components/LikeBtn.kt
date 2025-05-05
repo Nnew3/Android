@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BookmarkBtn(modifier: Modifier = Modifier, onClick: () -> Unit, iconRes: ImageVector) {
+fun LikeBtn(modifier: Modifier = Modifier, onClick: () -> Unit, iconRes: ImageVector) {
     IconButton(
         onClick = {
             onClick()
