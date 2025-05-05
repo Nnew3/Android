@@ -1,6 +1,8 @@
 package com.example.mz_focusnews.main
 
+import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,31 +14,57 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.mz_focusnews.LikeManagerViewModel
 import com.example.mz_focusnews.core.components.BottomNavBar
 import com.example.mz_focusnews.core.components.DrawerScreen
 import com.example.mz_focusnews.core.navigation.NavGraph
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.feature.home.HomeViewModel
+import com.example.mz_focusnews.feature.mypage.MyPageViewModel
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen() {
+
     val navController = rememberNavController()
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-    val viewModel: HomeViewModel = viewModel()
-    val breakingState = viewModel.breakingState.collectAsState().value
+    val homeVm: HomeViewModel = viewModel()
+    val breakingState = homeVm.breakingState.collectAsState().value
 
     val breakingList = breakingState.breakingNews?.breakingNews
+
+    val myPageVm: MyPageViewModel = viewModel()
+    val likeManagerVm: LikeManagerViewModel = viewModel()
+
+    val context = LocalContext.current
+    val mypageState = myPageVm.mypageState.collectAsState().value
+
+    // 앱 시작 시점에 MyPage API를 통해 userId를 받아와 SharedPreferences에 저장
+    // 로그인 연동 전까지 사용할 임시 코드
+    LaunchedEffect(mypageState.mypageInfo) {
+        mypageState.mypageInfo?.let { info ->
+            val userId = info.id
+
+            Log.d("Retrofit", "now user id: $userId")
+
+            context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                .edit().putLong("userId", userId).apply()
+
+            likeManagerVm.fetchLikeNews(userId)
+        }
+    }
 
     ModalDrawer( // TODO: drawer 열리는 방향 RtL로 변경!
         modifier = Modifier
@@ -74,7 +102,9 @@ fun MainScreen() {
             ) {
                 NavGraph(
                     navController = navController,
-                    homeViewModel = viewModel,
+                    homeViewModel = homeVm,
+                    myPageViewModel = myPageVm,
+                    likeManagerViewModel = likeManagerVm,
                     onDrawerOpen = {
                         coroutineScope.launch {
                             drawerState.open()
