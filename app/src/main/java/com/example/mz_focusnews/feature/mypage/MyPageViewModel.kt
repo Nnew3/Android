@@ -28,6 +28,7 @@ class MyPageViewModel : ViewModel() {
     val delKeywordState: StateFlow<DelKeywordState> = _delKeywordState
 
     private val _alarmState = MutableStateFlow(AlarmState())
+    val alarmState: StateFlow<AlarmState> = _alarmState
 
     private val _keywords = MutableStateFlow<Set<String>>(emptySet())
     val keywords: StateFlow<Set<String>> = _keywords

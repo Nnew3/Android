@@ -1,11 +1,6 @@
 package com.example.mz_focusnews.feature.mypage
 
-import android.Manifest
-import android.os.Build
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +40,7 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     val mypageState = viewModel.mypageState.collectAsState().value
     val setKeywordState = viewModel.setKeywordState.collectAsState().value
     val delKeywordState = viewModel.delKeywordState.collectAsState().value
+    val alarmState = viewModel.alarmState.collectAsState().value
 
     val keywords by viewModel.keywords.collectAsState() // 전역 키워드 구독
 
@@ -74,7 +69,7 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     // 삭제 성공 시 Toast
     when (delKeywordState.isError) {
         false -> {
-            Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "키워드가 삭제되었어요! ☺️", Toast.LENGTH_SHORT).show()
             delKeywordState.isError = null
         }
 
@@ -85,6 +80,27 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
         null -> {}
     }
+
+    when (alarmState.isError) {
+        false -> {
+            val msg = if (isAlarm) {
+                "알림 수신이 활성화되었어요"
+            } else {
+                "알림 수신 설정이 해제되었어요"
+            }
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "알림 수신 설정 변경에 실패했어요 😢", Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        null -> {}
+    }
+
+
 
     Surface(
         modifier = Modifier
