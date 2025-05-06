@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+
+    // Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -136,6 +139,10 @@ android {
 
         // custom tab
         implementation("androidx.browser:browser:1.8.0")
+
+        // Firebase
+        implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+        implementation("com.google.firebase:firebase-messaging:24.1.1")
 
 
     }

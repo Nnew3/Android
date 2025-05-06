@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "158045044690",
+    "project_id": "android-2cdcf",
+    "storage_bucket": "android-2cdcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158045044690:android:14ebfa587cf397f3e5520b",
+        "android_client_info": {
+          "package_name": "com.example.mz_focusnews"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVmwZaTe8IlHbZ8AXDnW5HrBYWmUt_m6o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
