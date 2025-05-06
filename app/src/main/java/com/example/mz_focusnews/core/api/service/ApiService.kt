@@ -10,11 +10,13 @@ import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsList
 import com.example.mz_focusnews.core.api.model.NewsResponse
+import com.example.mz_focusnews.core.api.model.PermissionRequest
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -81,6 +83,11 @@ interface ApiService {
     @HTTP(method = "DELETE", path = "/user/v1/news/like", hasBody = true)
     suspend fun unlikeNews(
         @Body req: NewsActionRequest
+    ): ApiResponse<Unit>
+
+    @PATCH("/user/v1/alarm")
+    suspend fun updateAlarmSetting(
+        @Body req: PermissionRequest
     ): ApiResponse<Unit>
 }
 

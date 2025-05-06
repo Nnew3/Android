@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,22 +40,16 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     val mypageState = viewModel.mypageState.collectAsState().value
     val setKeywordState = viewModel.setKeywordState.collectAsState().value
     val delKeywordState = viewModel.delKeywordState.collectAsState().value
+    val alarmState = viewModel.alarmState.collectAsState().value
 
     val keywords by viewModel.keywords.collectAsState() // 전역 키워드 구독
 
-    var alarmChecked by remember { mutableStateOf(true) }
+    val isAlarm by viewModel.isAlarm.collectAsState()
     var locationChecked by remember { mutableStateOf(false) }
 
     var openDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
-    LaunchedEffect(mypageState.mypageInfo) {
-        mypageState.mypageInfo?.let { info ->
-            alarmChecked = info.alarm
-            locationChecked = info.location
-        }
-    }
 
     // 등록 성공 시 Toast
     when (setKeywordState.isError) {
@@ -64,25 +57,50 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
             Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
             setKeywordState.isError = null
         }
+
         true -> {
             Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
             setKeywordState.isError = null
         }
+
         null -> {}
     }
 
     // 삭제 성공 시 Toast
     when (delKeywordState.isError) {
         false -> {
-            Toast.makeText(context, "키워드를 삭제했어요! ☺️", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "키워드가 삭제되었어요! ☺️", Toast.LENGTH_SHORT).show()
             delKeywordState.isError = null
         }
+
         true -> {
             Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
             delKeywordState.isError = null
         }
+
         null -> {}
     }
+
+    when (alarmState.isError) {
+        false -> {
+            val msg = if (isAlarm) {
+                "알림 수신이 활성화되었어요"
+            } else {
+                "알림 수신 설정이 해제되었어요"
+            }
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "알림 수신 설정 변경에 실패했어요 😢", Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        null -> {}
+    }
+
+
 
     Surface(
         modifier = Modifier
@@ -143,8 +161,10 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
 
                     ToggleItemBox(
                         title = "속보 알림 수신 동의",
-                        checked = alarmChecked,
-                        onCheckedChange = { alarmChecked = it }
+                        checked = isAlarm,
+                        onCheckedChange = {
+                            viewModel.toggleAlarm(userId = 1, it)
+                        }
                     )
 
                     ToggleItemBox(
