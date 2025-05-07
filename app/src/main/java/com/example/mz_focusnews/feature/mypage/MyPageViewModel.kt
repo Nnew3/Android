@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mz_focusnews.core.api.model.DelKeywordRequest
 import com.example.mz_focusnews.core.api.model.MyPageInfo
-import com.example.mz_focusnews.core.api.model.PermissionRequest
+import com.example.mz_focusnews.core.api.model.AlarmRequest
+import com.example.mz_focusnews.core.api.model.LocationRequest
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
@@ -30,11 +31,17 @@ class MyPageViewModel : ViewModel() {
     private val _alarmState = MutableStateFlow(AlarmState())
     val alarmState: StateFlow<AlarmState> = _alarmState
 
+    private val _locationState = MutableStateFlow(LocationState())
+    val locationState: StateFlow<LocationState> = _locationState
+
     private val _keywords = MutableStateFlow<Set<String>>(emptySet())
     val keywords: StateFlow<Set<String>> = _keywords
 
     private val _isAlarm = MutableStateFlow(false)
     val isAlarm: StateFlow<Boolean> = _isAlarm.asStateFlow()
+
+    private val _isLocation = MutableStateFlow(false)
+    val isLocation: StateFlow<Boolean> = _isLocation.asStateFlow()
 
     init {
         fetchMyPageInfo()
@@ -120,11 +127,11 @@ class MyPageViewModel : ViewModel() {
     fun toggleAlarm(userId: Long, checked: Boolean) {
         _alarmState.value = AlarmState(isLoading = true)  // 로딩 시작
 
-        Log.d("Alarm", "TOGGLE: alarm set ${checked}")
+        Log.d("Alarm", "TOGGLE: alarm set $checked")
 
         viewModelScope.launch {
             try {
-                service.updateAlarmSetting(PermissionRequest(userId, checked))
+                service.updateAlarmSetting(AlarmRequest(userId, checked))
 
                 _alarmState.value = AlarmState(isLoading = false, isError = false)
                 _isAlarm.value = checked
@@ -133,6 +140,27 @@ class MyPageViewModel : ViewModel() {
             } catch (e: Exception) {
                 _alarmState.value = AlarmState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Alarm", "Toggle Alarm Error: ${_alarmState.value.errorMsg}")
+
+            }
+        }
+    }
+
+    fun toggleLocation(userId: Long, checked: Boolean) {
+        _locationState.value = LocationState(isLoading = true)  // 로딩 시작
+
+        Log.d("Location", "TOGGLE: location set $checked")
+
+        viewModelScope.launch {
+            try {
+                service.updateLocationSetting(LocationRequest(userId, checked))
+
+                _locationState.value = LocationState(isLoading = false, isError = false)
+                _isLocation.value = checked
+
+                Log.d("Location", "toggleLocation called:: ${_locationState.value}")
+            } catch (e: Exception) {
+                _locationState.value = LocationState(isLoading = false, isError = true, errorMsg = e.message)
+                Log.e("Location", "Toggle Location Error: ${_locationState.value.errorMsg}")
 
             }
         }
@@ -159,6 +187,12 @@ data class DelKeywordState(
 )
 
 data class AlarmState(
+    val isLoading: Boolean = false,
+    var isError: Boolean? = null,
+    val errorMsg: String? = null
+)
+
+data class LocationState(
     val isLoading: Boolean = false,
     var isError: Boolean? = null,
     val errorMsg: String? = null

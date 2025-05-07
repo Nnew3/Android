@@ -41,66 +41,16 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
     val setKeywordState = viewModel.setKeywordState.collectAsState().value
     val delKeywordState = viewModel.delKeywordState.collectAsState().value
     val alarmState = viewModel.alarmState.collectAsState().value
+    val locationState = viewModel.locationState.collectAsState().value
 
     val keywords by viewModel.keywords.collectAsState() // 전역 키워드 구독
 
     val isAlarm by viewModel.isAlarm.collectAsState()
-    var locationChecked by remember { mutableStateOf(false) }
+    val isLocation by viewModel.isLocation.collectAsState()
 
     var openDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
-    // 등록 성공 시 Toast
-    when (setKeywordState.isError) {
-        false -> {
-            Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
-            setKeywordState.isError = null
-        }
-
-        true -> {
-            Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
-            setKeywordState.isError = null
-        }
-
-        null -> {}
-    }
-
-    // 삭제 성공 시 Toast
-    when (delKeywordState.isError) {
-        false -> {
-            Toast.makeText(context, "키워드가 삭제되었어요! ☺️", Toast.LENGTH_SHORT).show()
-            delKeywordState.isError = null
-        }
-
-        true -> {
-            Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
-            delKeywordState.isError = null
-        }
-
-        null -> {}
-    }
-
-    when (alarmState.isError) {
-        false -> {
-            val msg = if (isAlarm) {
-                "알림 수신이 활성화되었어요"
-            } else {
-                "알림 수신 설정이 해제되었어요"
-            }
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            alarmState.isError = null
-        }
-
-        true -> {
-            Toast.makeText(context, "알림 수신 설정 변경에 실패했어요 😢", Toast.LENGTH_SHORT).show()
-            alarmState.isError = null
-        }
-
-        null -> {}
-    }
-
-
 
     Surface(
         modifier = Modifier
@@ -163,14 +113,16 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
                         title = "속보 알림 수신 동의",
                         checked = isAlarm,
                         onCheckedChange = {
-                            viewModel.toggleAlarm(userId = 1, it)
+                            viewModel.toggleAlarm(mypageState.mypageInfo.id, it)
                         }
                     )
 
                     ToggleItemBox(
                         title = "위치 정보 이용 동의",
-                        checked = locationChecked,
-                        onCheckedChange = { locationChecked = it }
+                        checked = isLocation,
+                        onCheckedChange = {
+                            viewModel.toggleLocation(mypageState.mypageInfo.id, it)
+                        }
                     )
 
                     Text(
@@ -197,6 +149,73 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
                 }
             )
         }
+    }
+
+    when (setKeywordState.isError) {
+        false -> {
+            Toast.makeText(context, "키워드를 등록했어요! ☺️", Toast.LENGTH_SHORT).show()
+            setKeywordState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "키워드를 등록하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            setKeywordState.isError = null
+        }
+
+        null -> {}
+    }
+
+    // 삭제 성공 시 Toast
+    when (delKeywordState.isError) {
+        false -> {
+            Toast.makeText(context, "키워드가 삭제되었어요! ☺️", Toast.LENGTH_SHORT).show()
+            delKeywordState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "키워드를 삭제하지 못했어요 🥹", Toast.LENGTH_SHORT).show()
+            delKeywordState.isError = null
+        }
+
+        null -> {}
+    }
+
+    when (alarmState.isError) {
+        false -> {
+            val msg = if (isAlarm) {
+                "알림 수신 설정이 활성화되었어요"
+            } else {
+                "알림 수신 설정이 비활성화되었어요"
+            }
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "알림 수신 설정 변경에 실패했어요 😢", Toast.LENGTH_SHORT).show()
+            alarmState.isError = null
+        }
+
+        null -> {}
+    }
+
+    when (locationState.isError) {
+        false -> {
+            val msg = if (isLocation) {
+                "위치 정보 사용이 활성화되었어요 "
+            } else {
+                "위치 정보 사용이 비활성화되었어요"
+            }
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            locationState.isError = null
+        }
+
+        true -> {
+            Toast.makeText(context, "위치 정보 동의 변경에 실패했어요 😢", Toast.LENGTH_SHORT).show()
+            locationState.isError = null
+        }
+
+        null -> {}
     }
 }
 
