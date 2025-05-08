@@ -12,6 +12,10 @@ import com.example.mz_focusnews.core.api.model.NewsDetail
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsList
 import com.example.mz_focusnews.core.api.model.NewsResponse
+import com.example.mz_focusnews.core.api.model.Question
+import com.example.mz_focusnews.core.api.model.QuizScoreRequest
+import com.example.mz_focusnews.core.api.model.QuizUserInfo
+import com.example.mz_focusnews.core.api.model.Ranking
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
 import retrofit2.http.Body
@@ -95,6 +99,22 @@ interface ApiService {
     suspend fun updateLocationSetting(
         @Body req: LocationRequest
     ): ApiResponse<Unit>
+
+    @GET("/user/v1/quiz/info")
+    suspend fun getQuizUserInfo(): ApiResponse<QuizUserInfo>
+
+    @POST("/user/v1/quiz/score")
+    suspend fun setQuizScore(
+        @Body req: QuizScoreRequest
+    ): ApiResponse<Unit>
+
+    @GET("/user/v1/quiz/ranking")
+    suspend fun getQuizRanking(): ApiResponse<Ranking>
+
+    @GET("/user/v1/quiz")
+    suspend fun getQuizQuestions(
+        @Query("num") num: Int,
+    ): ApiResponse<Question>
 
 }
 
