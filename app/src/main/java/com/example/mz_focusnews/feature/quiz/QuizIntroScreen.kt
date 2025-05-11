@@ -6,9 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,6 +20,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +39,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.R
 import com.example.mz_focusnews.core.components.QuizRuleDialog
+import com.example.mz_focusnews.core.components.StatusCard
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_400
 import com.example.mz_focusnews.core.theme.Today_Blue
@@ -42,13 +47,19 @@ import com.example.mz_focusnews.core.theme.Yellow_200
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun QuizIntroScreen(navController: NavController) {
+fun QuizIntroScreen(viewModel: QuizViewModel, navController: NavController) {
+
+    val quizInfoState = viewModel.quizInfoState.collectAsState().value
 
     val checkReadTodayNews = remember { true }
     val gameBtnColor = if (checkReadTodayNews) Yellow_200 else Gray_400
     val btnTextColor = if (checkReadTodayNews) Color.Black else Color.White
 
     var openDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchQuizUserInfo()
+    }
 
     Surface(
         modifier = Modifier
@@ -112,31 +123,55 @@ fun QuizIntroScreen(navController: NavController) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 30.dp),
+                        .padding(vertical = 30.dp)
+                        .height(IntrinsicSize.Min),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "현재 래로미 님의 상식 점수는",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 18.sp
-                        )
-                    )
+                    when {
+                        quizInfoState.isLoading -> {
+                            StatusCard(
+                                imgRes = R.drawable.img_loading_kitty,
+                                msg = "사용자 정보를 가져오는 중이에요"
+                            )
+                        }
 
-                    Text(
-                        modifier = Modifier.padding(top = 5.dp),
-                        text = "2,500 점이에요!",
-                        style = TextStyle(
-                            fontFamily = preFontFamily,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 18.sp
-                        )
-                    )
+                        quizInfoState.isError -> {
+                            StatusCard(
+                                imgRes = R.drawable.img_network_kitty,
+                                msg = "네트워크 오류가 발생했어요"
+                            )
+                        }
+
+                        (quizInfoState.quizUserInfo == null) -> {
+                            StatusCard(
+                                imgRes = R.drawable.img_error_kitty, msg = "사용자 정보가 존재하지 않아요"
+                            )
+                        }
+
+                        else -> {
+                            Text(
+                                text = "현재 ${quizInfoState.quizUserInfo.nickname} 님의 상식 점수는",
+                                style = TextStyle(
+                                    fontFamily = preFontFamily,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 18.sp
+                                )
+                            )
+
+                            Text(
+                                modifier = Modifier.padding(top = 5.dp),
+                                text = "${quizInfoState.quizUserInfo.score} 점이에요!",
+                                style = TextStyle(
+                                    fontFamily = preFontFamily,
+                                    fontWeight = FontWeight.SemiBold,
+                                    fontSize = 18.sp
+                                )
+                            )
+                        }
+                    }
                 }
             }
-
 
             TextButton(
                 onClick = {
@@ -159,10 +194,10 @@ fun QuizIntroScreen(navController: NavController) {
                     modifier = Modifier.padding(horizontal = 28.dp)
                 )
             }
+        }
 
-            if (!checkReadTodayNews) {
-                TodayNewsGuide(navController)
-            }
+        if (!checkReadTodayNews) {
+            TodayNewsGuide(navController)
         }
     }
 
@@ -244,5 +279,5 @@ private fun TodayNewsGuide(navController: NavController) {
 @Preview
 @Composable
 fun QuizIntroPreview() {
-    QuizIntroScreen(rememberNavController())
+    QuizIntroScreen(QuizViewModel(), rememberNavController())
 }
