@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun QuizScoreSection() {
+fun QuizScoreSection(myPageState: MyPageState) {
     Box(
         modifier = Modifier
             .padding(top = 4.dp)
@@ -47,7 +47,7 @@ fun QuizScoreSection() {
 
             Text(
                 modifier = Modifier.padding(top = 12.dp),
-                text = "2,500 점",
+                text = "${myPageState.mypageInfo?.score}점",
                 style = TextStyle(
                     fontFamily = preFontFamily,
                     fontWeight = FontWeight.Bold,

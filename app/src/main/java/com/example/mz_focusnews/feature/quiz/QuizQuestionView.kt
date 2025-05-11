@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,10 +22,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.api.model.Question
 import com.example.mz_focusnews.core.components.QuizProgressBar
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Blue_800
@@ -38,8 +37,8 @@ import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
 fun QuizQuestionView(
-    quiz: Quiz,
-    userSelectedIndex: Int,
+    quiz: Question?,
+    userSelectedOption: Int,
     isChecked: Boolean,
     isSubmitted: Boolean,
     currentQuestionIndex: Int, // 현재 문제 인덱스 추가
@@ -62,7 +61,7 @@ fun QuizQuestionView(
         // 이미지 - 정답/오답에 따라 다른 이미지 표시
         val imageRes = when {
             !isSubmitted -> R.drawable.img_quiz_play // 기본 이미지
-            userSelectedIndex == quiz.correctAnswer -> R.drawable.img_quiz_answer // 정답 이미지
+            userSelectedOption == quiz?.answer -> R.drawable.img_quiz_answer // 정답 이미지
             else -> R.drawable.img_quiz_wrong // 오답 이미지
         }
 
@@ -76,7 +75,7 @@ fun QuizQuestionView(
 
         Text(
             modifier = Modifier.padding(top = 30.dp),
-            text = "Q. ${quiz.question}",
+            text = "Q. ${quiz?.question}",
             style = TextStyle(
                 fontFamily = preFontFamily,
                 fontWeight = FontWeight.Bold,
@@ -92,23 +91,23 @@ fun QuizQuestionView(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            quiz.options.forEachIndexed { optionIndex, option ->
+            quiz?.optionList?.forEach { option ->
                 val bgColor = when {
-                    isSubmitted && optionIndex == quiz.correctAnswer -> Green    // 정답
-                    isSubmitted && optionIndex == userSelectedIndex -> Red  // 오답
-                    isChecked && optionIndex == userSelectedIndex -> Blue_800   // 선택한 보기
+                    isSubmitted && option.id == quiz.answer -> Green    // 정답
+                    isSubmitted && option.id == userSelectedOption -> Red  // 오답
+                    isChecked && option.id == userSelectedOption -> Blue_800   // 선택한 보기
                     else -> Gray_400    // 기본
                 }
 
                 Button(
-                    onClick = { onSelected(optionIndex) },
+                    onClick = { onSelected(option.id) }, // 클릭한 옵션의 id로 변경
                     colors = ButtonDefaults.buttonColors(
                         containerColor = bgColor,
                         disabledContainerColor = bgColor
                     )
                 ) {
                     Text(
-                        text = option,
+                        text = option.option,
                         style = TextStyle(
                             fontFamily = preFontFamily,
                             fontWeight = FontWeight.Bold,
@@ -152,7 +151,7 @@ fun QuizQuestionView(
                 )
 
                 QuizActionButton(
-                    onClick = { onSubmitted(userSelectedIndex) },
+                    onClick = { onSubmitted(userSelectedOption) },
                     btnText = "제출하기"
                 )
             }
@@ -183,62 +182,6 @@ private fun QuizActionButton(
                 .wrapContentWidth()
                 .padding(vertical = 6.dp, horizontal = 20.dp),
             textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Preview
-@Composable
-fun QuizQuestionPreview() {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Bg_Blue)
-            .padding(25.dp)
-    ) {
-        val sampleQuizzes = listOf(
-            Quiz(
-                question = "다음 중 코틀린의 특징이 아닌 것은?",
-                options = listOf(
-                    "Null 안정성 지원",
-                    "스마트 캐스팅",
-                    "JVM에서 실행 가능",
-                    "수동 메모리 관리 필요"
-                ),
-                correctAnswer = 3
-            ),
-            Quiz(
-                question = "안드로이드에서 UI 스레드로 작업하는 방법은?",
-                options = listOf(
-                    "Handler 사용",
-                    "Runnable 사용",
-                    "Coroutine 사용",
-                    "Dispatchers.Main 사용"
-                ),
-                correctAnswer = 0
-            ),
-            Quiz(
-                question = "다음 중 코틀린에서 'null safety'를 제공하는 기능은?",
-                options = listOf(
-                    "NullPointerException",
-                    "?.",
-                    "?!!.",
-                    "None of the above"
-                ),
-                correctAnswer = 1
-            )
-        )
-
-        QuizQuestionView(
-            quiz = sampleQuizzes[0],
-            userSelectedIndex = -1,
-            isChecked = false,
-            isSubmitted = false,
-            currentQuestionIndex = 0,
-            onSelected = { },
-            onSubmitted = { },
-            showResultDialog = { },
-            remainingTime = 5
         )
     }
 }

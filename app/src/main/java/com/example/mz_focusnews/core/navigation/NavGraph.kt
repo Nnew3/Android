@@ -23,7 +23,7 @@ import com.example.mz_focusnews.feature.mypage.MyPageViewModel
 import com.example.mz_focusnews.feature.quiz.QuizIntroScreen
 import com.example.mz_focusnews.feature.quiz.QuizPlayScreen
 import com.example.mz_focusnews.feature.quiz.QuizScreen
-import com.example.mz_focusnews.feature.quiz.RankingScreen
+import com.example.mz_focusnews.feature.quiz.QuizViewModel
 import com.example.mz_focusnews.feature.recent.RecentNewsScreen
 import com.example.mz_focusnews.feature.recent.RecentNewsViewModel
 
@@ -36,6 +36,8 @@ fun NavGraph(
     likeManagerViewModel: LikeManagerViewModel,
     onDrawerOpen: () -> Unit
 ) {
+    val quizViewModel: QuizViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = BottomNavItem.Home.route) {
         composable(BottomNavItem.Home.route) {
             HomeScreen(homeViewModel, navController, onDrawerOpen)
@@ -47,7 +49,7 @@ fun NavGraph(
         }
 
         composable(BottomNavItem.Quiz.route) {
-            QuizScreen(navController)
+            QuizScreen(quizViewModel, navController)
         }
 
         composable(BottomNavItem.MyPage.route) {
@@ -78,15 +80,15 @@ fun NavGraph(
         }
 
         composable(ScreenRoute.QuizIntro.route) {
-            QuizIntroScreen(navController)
+            QuizIntroScreen(quizViewModel, navController)
         }
 
         composable(ScreenRoute.QuizPlay.route) {
-            QuizPlayScreen(navController)
+            QuizPlayScreen(quizViewModel, navController)
         }
-
-        composable(ScreenRoute.Ranking.route) {
-            RankingScreen()
-        }
+//
+//        composable(ScreenRoute.Ranking.route) {
+//            RankingScreen()
+//        }
     }
 }
