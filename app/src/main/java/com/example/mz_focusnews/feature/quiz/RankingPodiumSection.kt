@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.api.model.UserRanking
 import com.example.mz_focusnews.core.theme.Blue_700
 import com.example.mz_focusnews.core.theme.Blue_800
 import com.example.mz_focusnews.core.theme.Blue_900
@@ -34,52 +35,55 @@ import com.example.mz_focusnews.core.theme.Today_Blue
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun RankingPodiumSection() {
+fun RankingPodiumSection(topRanking: List<UserRanking>) {
+    val podiumRanks = listOf(2L, 1L, 3L) // 중앙을 1등으로 두기 위해 순서 조정
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.Center
     ) {
-        listOf(2, 1, 3).forEach { rank ->
-            PodiumBox(rank = rank)
+        podiumRanks.forEach { rank ->
+            val user = topRanking.find { it.ranking == rank }
+            PodiumBox(user, rank)
         }
     }
 }
 
 @Composable
-fun PodiumBox(rank: Int) {
+fun PodiumBox(user: UserRanking?, rank: Long) {
     val height = when (rank) {
-        1 -> 240.dp
-        2 -> 190.dp
-        3 -> 130.dp
+        1L -> 240.dp
+        2L -> 190.dp
+        3L -> 130.dp
         else -> 0.dp
     }
 
     val color = when (rank) {
-        1 -> Blue_900
-        2 -> Blue_800
-        3 -> Blue_700
+        1L -> Blue_900
+        2L -> Blue_800
+        3L -> Blue_700
         else -> Color.LightGray
     }
 
     val userImage = when (rank) {
-        1 -> R.drawable.img_person1
-        2 -> R.drawable.img_person2
-        3 -> R.drawable.img_person3
+        1L -> R.drawable.img_person1
+        2L -> R.drawable.img_person2
+        3L -> R.drawable.img_person3
         else -> R.drawable.img_person4
     }
 
     val icon = when (rank) {
-        1 -> R.drawable.icon_rank1
-        2 -> R.drawable.icon_rank2
-        3 -> R.drawable.icon_rank3
+        1L -> R.drawable.icon_rank1
+        2L -> R.drawable.icon_rank2
+        3L -> R.drawable.icon_rank3
         else -> R.drawable.example
     }
 
     val iconSize = when (rank) {
-        1 -> 50.dp
-        2 -> 40.dp
-        3 -> 30.dp
+        1L -> 50.dp
+        2L -> 40.dp
+        3L -> 30.dp
         else -> 0.dp
     }
 
@@ -91,7 +95,6 @@ fun PodiumBox(rank: Int) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-
             Image(
                 painter = painterResource(userImage),
                 contentDescription = "exmaple image",
@@ -103,7 +106,7 @@ fun PodiumBox(rank: Int) {
             )
 
             Text(
-                text = "유저 이름",
+                text = user?.nickname ?: "-",
                 style = TextStyle(
                     fontFamily = preFontFamily,
                     fontWeight = FontWeight.SemiBold,
@@ -118,7 +121,7 @@ fun PodiumBox(rank: Int) {
                     .padding(vertical = 10.dp, horizontal = 20.dp)
             ) {
                 Text(
-                    text = "2,500점",
+                    text = user?.score?.toString()?.plus("점") ?: "-점",
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.SemiBold,
@@ -151,5 +154,5 @@ fun PodiumBox(rank: Int) {
 @Composable
 @Preview
 fun RankingPodiumPreview(){
-    RankingPodiumSection()
+//    RankingPodiumSection()
 }

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,29 +29,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.api.model.UserRanking
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.core.theme.Gray_200
 import com.example.mz_focusnews.core.theme.Gray_500
 import com.example.mz_focusnews.core.theme.preFontFamily
 
 @Composable
-fun RankingListSection(userList: List<String>) {
-
+fun RankingListSection(userList: List<UserRanking>) {
     LazyColumn(
         modifier = Modifier
             .background(Bg_Blue)
             .padding(top = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(userList) { index, user ->
-            val rank = index + 4 // Podium 1~3등 이후니까 4부터 시작
-            RankingListItem(rank, user)
+        items(userList) { user ->
+            RankingListItem(user)
         }
     }
 }
 
 @Composable
-fun RankingListItem(rank: Int, user: String) {
+fun RankingListItem(user: UserRanking) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,7 +73,7 @@ fun RankingListItem(rank: Int, user: String) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = rank.toString(),
+                    text = user.ranking.toString(),
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -95,7 +94,7 @@ fun RankingListItem(rank: Int, user: String) {
 
             Column {
                 Text(
-                    text = user,
+                    text = user.nickname,
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -103,7 +102,7 @@ fun RankingListItem(rank: Int, user: String) {
                     )
                 )
                 Text(
-                    text = "점수",
+                    text = "${user.score}점",
                     style = TextStyle(
                         fontFamily = preFontFamily,
                         fontWeight = FontWeight.Medium,
@@ -120,5 +119,5 @@ fun RankingListItem(rank: Int, user: String) {
 @Composable
 @Preview
 fun RankingListPreview() {
-    RankingListSection(listOf("다지니", "래로미", "고양이", "강아지"))
+//    RankingListSection(listOf("다지니", "래로미", "고양이", "강아지"))
 }
