@@ -5,6 +5,7 @@ data class MyPageInfo(
     val nickName: String,
     val email: String,
     val keyword: String,
+    val score: Int,
     val alarm: Boolean,
     val location: Boolean
 )

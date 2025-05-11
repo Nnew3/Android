@@ -90,7 +90,7 @@ fun MyPageScreen(viewModel: MyPageViewModel, navController: NavController) {
                 else -> {
                     UserInfoSection(mypageState)
 
-                    QuizScoreSection()
+                    QuizScoreSection(mypageState)
 
                     KeywordSetSection(
                         keyword = keywords,

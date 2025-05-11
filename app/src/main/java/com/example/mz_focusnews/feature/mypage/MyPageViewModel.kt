@@ -47,7 +47,7 @@ class MyPageViewModel : ViewModel() {
         fetchMyPageInfo()
     }
 
-    fun fetchMyPageInfo() {
+    private fun fetchMyPageInfo() {
         _mypageState.value = MyPageState(isLoading = true)  // 로딩 시작
 
         viewModelScope.launch {
@@ -60,6 +60,7 @@ class MyPageViewModel : ViewModel() {
                 _keywords.value = keywordSplit(keywordStr).toSet()
 
                 _isAlarm.value = response.data.alarm
+                _isLocation.value = response.data.location
 
                 Log.d("Retrofit", "fetchMyPageInfo called:: ${_mypageState.value}")
             } catch (e: Exception) {
