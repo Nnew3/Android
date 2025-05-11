@@ -1,6 +1,7 @@
 package com.example.mz_focusnews.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -18,17 +19,24 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.LikeManagerViewModel
 import com.example.mz_focusnews.checkAndRequestPermission
 import com.example.mz_focusnews.core.components.BottomNavBar
+import com.example.mz_focusnews.core.components.BottomNavItem
 import com.example.mz_focusnews.core.components.DrawerScreen
 import com.example.mz_focusnews.core.navigation.NavGraph
 import com.example.mz_focusnews.core.theme.Bg_Blue
@@ -63,6 +71,16 @@ fun MainScreen() {
     }
 
     val navController = rememberNavController()
+
+    var bottomNavBar = true
+    val cur = navController.currentBackStackEntryAsState().value
+    cur?.destination?.route?.let { route ->
+        bottomNavBar = when (route) {
+            BottomNavItem.Home.route, BottomNavItem.Category.route, BottomNavItem.Quiz.route, BottomNavItem.MyPage.route -> true
+            else -> false
+        }
+    }
+
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -95,6 +113,8 @@ fun MainScreen() {
         }
     }
 
+    HideSystemBars()
+
     ModalDrawer( // TODO: drawer 열리는 방향 RtL로 변경!
         modifier = Modifier
             .fillMaxSize()
@@ -119,7 +139,9 @@ fun MainScreen() {
         Scaffold(
             modifier = Modifier.background(Bg_Blue),
             bottomBar = {
-                BottomNavBar(navController = navController)
+                if (bottomNavBar) {
+                    BottomNavBar(navController = navController)
+                }
             }
         )
         {
@@ -142,6 +164,20 @@ fun MainScreen() {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun HideSystemBars() {
+    val view = LocalView.current
+    SideEffect {
+        val window = (view.context as Activity).window
+        val windowInsetsController = WindowCompat.getInsetsController(window, view)
+        // 탐색 바(하단 바)만 숨기기
+        windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
+        // 시스템 UI가 다시 나타나지 않도록 동작 설정 (선택 사항)
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 }
 
