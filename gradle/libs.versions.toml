@@ -16,6 +16,7 @@ navigationCompose = "2.8.9"
 navigationFragment = "2.7.7"
 navigationUi = "2.7.7"
 toolsCore = "1.0.0-alpha13"
+locationServices = "21.3.0"
 
 [libraries]
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -43,6 +44,7 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 androidx-tools-core = { group = "androidx.privacysandbox.tools", name = "tools-core", version.ref = "toolsCore" }
+google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "locationServices" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
