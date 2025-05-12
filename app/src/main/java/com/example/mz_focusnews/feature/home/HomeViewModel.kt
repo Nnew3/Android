@@ -7,6 +7,7 @@ import com.example.mz_focusnews.core.api.model.BreakingNews
 import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsResponse
+import com.example.mz_focusnews.core.api.model.SetLocationRequest
 import com.example.mz_focusnews.core.api.service.ApiService
 import com.example.mz_focusnews.core.api.service.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +36,7 @@ class HomeViewModel : ViewModel() {
         fetchUserNews()
     }
 
-    fun fetchMainInfo(){
+    fun fetchMainInfo() {
         _mainInfoState.value = MainInfoState(isLoading = true)  // 로딩 시작
         viewModelScope.launch {
             try {
@@ -81,7 +82,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    fun fetchUserNews(){
+    fun fetchUserNews() {
         _userNewsState.value = UserNewsState(isLoading = true)
         viewModelScope.launch {
             try {
@@ -91,8 +92,22 @@ class HomeViewModel : ViewModel() {
                 Log.d("Retrofit", "fetchRecommendNews called:: ${_userNewsState.value}")
 
             } catch (e: Exception) {
-                _userNewsState.value = UserNewsState(isLoading = false, isError = true, errorMsg = e.message)
+                _userNewsState.value =
+                    UserNewsState(isLoading = false, isError = true, errorMsg = e.message)
                 Log.e("Retrofit", "Recommend News Error: ${_userNewsState.value.errorMsg}")
+            }
+        }
+    }
+
+    fun setLocation(userId: Long, lat: Double, lon: Double) {
+        Log.d("Retrofit", "setLocation called:: ($userId, $lat, $lon)")
+
+        viewModelScope.launch {
+            try {
+                val response = service.setLocation(SetLocationRequest(userId, lat, lon))
+                Log.d("Retrofit", "setLocation: ${response.success}")
+            } catch (e: Exception) {
+                Log.e("Retrofit", "Set Location News Error: ${e.message}")
             }
         }
     }

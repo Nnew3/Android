@@ -18,6 +18,7 @@ import com.example.mz_focusnews.core.api.model.QuizUserInfo
 import com.example.mz_focusnews.core.api.model.Ranking
 import com.example.mz_focusnews.core.api.model.RelatedNewsList
 import com.example.mz_focusnews.core.api.model.SetKeywordRequest
+import com.example.mz_focusnews.core.api.model.SetLocationRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -116,5 +117,9 @@ interface ApiService {
         @Query("num") num: Int,
     ): ApiResponse<Question>
 
+    @POST("/user/v1/location")
+    suspend fun setLocation(
+        @Body req: SetLocationRequest
+    ): ApiResponse<Unit>
 }
 
