@@ -1,12 +1,8 @@
 package com.example.mz_focusnews.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,7 +30,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mz_focusnews.LikeManagerViewModel
-import com.example.mz_focusnews.checkAndRequestPermission
 import com.example.mz_focusnews.core.components.BottomNavBar
 import com.example.mz_focusnews.core.components.BottomNavItem
 import com.example.mz_focusnews.core.components.DrawerScreen
@@ -48,28 +43,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-
-    val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        arrayOf(
-            Manifest.permission.POST_NOTIFICATIONS,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    } else {
-        TODO("VERSION.SDK_INT < TIRAMISU")
-    }
-
-    val launcherMultiplePermissions = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionMap ->
-        val allGranted = permissionMap.values.reduce { acc, next -> acc && next }
-        if (allGranted) {
-            Log.d("Permission", "권한이 동의되었습니다")
-        } else {
-            Log.d("Permission", "권한이 거부되었습니다")
-        }
-    }
-
     val navController = rememberNavController()
 
     var bottomNavBar = true
@@ -93,23 +66,20 @@ fun MainScreen() {
 
     val likeManagerVm: LikeManagerViewModel = viewModel()
 
-    // 권한 받아오기
-    LaunchedEffect(Unit) {
-        checkAndRequestPermission(context, permissions, launcherMultiplePermissions)
-    }
-
     // 앱 시작 시점에 MyPage API를 통해 userId를 받아와 SharedPreferences에 저장
     // 로그인 연동 전까지 사용할 임시 코드
     LaunchedEffect(mypageState.mypageInfo) {
         mypageState.mypageInfo?.let { info ->
             val userId = info.id
 
-            Log.d("Retrofit", "now user id: $userId")
+            val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            prefs.edit().putLong("userId", userId).apply()
 
-            context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                .edit().putLong("userId", userId).apply()
+            val lat = prefs.getFloat("lat", 0f).toDouble()
+            val lon = prefs.getFloat("lon", 0f).toDouble()
 
             likeManagerVm.fetchLikeNews(userId)
+            homeVm.setLocation(userId, lat, lon)
         }
     }
 
@@ -175,7 +145,6 @@ fun HideSystemBars() {
         val windowInsetsController = WindowCompat.getInsetsController(window, view)
         // 탐색 바(하단 바)만 숨기기
         windowInsetsController.hide(WindowInsetsCompat.Type.navigationBars())
-        // 시스템 UI가 다시 나타나지 않도록 동작 설정 (선택 사항)
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
