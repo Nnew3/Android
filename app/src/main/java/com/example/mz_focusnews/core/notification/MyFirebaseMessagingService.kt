@@ -16,10 +16,18 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.mz_focusnews.MainActivity
 import com.example.mz_focusnews.R
+import com.example.mz_focusnews.core.api.model.FCMRequest
+import com.example.mz_focusnews.core.api.service.ApiService
+import com.example.mz_focusnews.core.api.service.RetrofitClient
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    private val service: ApiService = RetrofitClient.getInstance().create(ApiService::class.java)
 
     // 메세지 수신 시 호출
     @RequiresApi(Build.VERSION_CODES.O)
@@ -67,9 +75,40 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d("FCM", "Short lived task is done.")
     }
 
-    // 타사 서버에 토큰을 유지해주는 메서드이다.
+    // 타사 서버에 토큰을 유지해주는 메서드
     private fun sendRegistrationToServer(token: String?) {
         Log.d("FCM", "sendRegistrationTokenToServer($token)")
+
+        val sharedPref = getSharedPreferences("user_prefs", MODE_PRIVATE)
+        val userId = sharedPref.getString("userId", null)
+
+        if (userId == null) {
+            Log.e("FCM", "User Id not found")
+            return
+        }
+
+        if (token == null) {
+            Log.e("FCM", "Token not found")
+            return
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = service.postUserToken(
+                    userId = userId.toLong(),
+                    req = FCMRequest(token)
+                )
+
+                if (response.success) {
+                    Log.d("FCM", "Token successfully sent to server")
+                } else {
+                    Log.e("FCM", "Failed to send token.")
+                }
+            } catch (e: Exception) {
+                Log.e("FCM", "Error sending token", e)
+
+            }
+        }
     }
 
     // 알림 생성 및 표시
@@ -93,7 +132,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
 
         val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR_0_1) {
             val channel = NotificationChannel(
