@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mz_focusnews.core.api.model.BreakingNews
+import com.example.mz_focusnews.core.api.model.FCMRequest
 import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.NewsGroup
 import com.example.mz_focusnews.core.api.model.NewsResponse
@@ -111,6 +112,22 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
+
+    fun sendFCMToken(userId: Long, token: String) {
+        viewModelScope.launch {
+            try {
+                val response = service.postUserToken(userId, FCMRequest(token))
+                if (response.success) {
+                    Log.d("FCM", "Token 등록 성공")
+                } else {
+                    Log.e("FCM", "Token 등록 실패")
+                }
+            } catch (e: Exception) {
+                Log.e("FCM", "통신 에러", e)
+            }
+        }
+    }
+
 }
 
 data class NewsState(

@@ -3,6 +3,7 @@ package com.example.mz_focusnews.main
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,7 @@ import com.example.mz_focusnews.core.navigation.NavGraph
 import com.example.mz_focusnews.core.theme.Bg_Blue
 import com.example.mz_focusnews.feature.home.HomeViewModel
 import com.example.mz_focusnews.feature.mypage.MyPageViewModel
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -80,6 +82,17 @@ fun MainScreen() {
 
             likeManagerVm.fetchLikeNews(userId)
             homeVm.setLocation(userId, lat, lon)
+
+            // 앱 시작 시 토큰을 서버로 보낸다
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "Fetching FCM token failed", task.exception)
+                    return@addOnCompleteListener
+                }
+                val token = task.result
+                Log.d("FCM", "FCM Token: $token")
+                homeVm.sendFCMToken(userId, token)
+            }
         }
     }
 

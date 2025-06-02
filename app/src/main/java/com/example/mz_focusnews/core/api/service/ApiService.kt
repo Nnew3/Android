@@ -4,6 +4,7 @@ import com.example.mz_focusnews.core.api.ApiResponse
 import com.example.mz_focusnews.core.api.model.AlarmRequest
 import com.example.mz_focusnews.core.api.model.BreakingNews
 import com.example.mz_focusnews.core.api.model.DelKeywordRequest
+import com.example.mz_focusnews.core.api.model.FCMRequest
 import com.example.mz_focusnews.core.api.model.LocationRequest
 import com.example.mz_focusnews.core.api.model.MainInfo
 import com.example.mz_focusnews.core.api.model.MyPageInfo
@@ -24,6 +25,7 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -119,6 +121,17 @@ interface ApiService {
 
     @POST("/user/v1/location")
     suspend fun setLocation(
+        @Body req: SetLocationRequest
+    ): ApiResponse<Unit>
+
+    @POST("/user/{id}/token")
+    suspend fun postUserToken(
+        @Path("id") userId: Long,
+        @Body req: FCMRequest
+    ): ApiResponse<Unit>
+
+    @POST("/breakingNews")
+    suspend fun ss(
         @Body req: SetLocationRequest
     ): ApiResponse<Unit>
 }
